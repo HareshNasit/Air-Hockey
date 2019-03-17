@@ -82,58 +82,64 @@ module part2
     
 endmodule
 
-module datapath(clock, reset_n, x_or_y, colour, enable_x, enable_y, enable_colour, x_out, y_out, colour_out, enable,writeEn, enable_divider);
-    input clock, reset_n, enable_x, enable_y, enable_colour, enable,writeEn, enable_divider;
-    input[6:0] x_or_y;
-    input[2:0] colour;
+module datapath(clock, reset_n, x_out, y_out, go, enable_erase, enable_update, colour_out, enable, enable_fcounter);
+    input clock, reset_n, enable, enable_erase, enable_update,enable_fcounter;
+	 output reg go;
     output [7:0] x_out;
     output [6:0] y_out;
     output [2:0] colour_out;
     reg[7:0] x_inside; 
     reg[6:0] y_inside;
     reg[2:0] colour_inside;
-	 //wire[7:0] x_out;
+	 reg vertical;
+	 reg horizontal;
+	 reg[1:0] x_count;
+    reg[1:0] y_count;
 
     //Register for x, y, colour
     always @(posedge clock)
     begin
-        if (!reset_n)
+        if (reset_n)
         begin
             x_inside <= 8'b00000000;
-            y_inside <= 7'b0000000;
-            colour_inside <= 3'b000;
+            y_inside <= 60;
+            colour_inside <= 3'b100;
+				vertical <= 1; //up
+				horizontal <= 1;//right
+				go <= 0;
         end
         else
         begin
-            if (enable_x) begin
-	             x_inside <= {1'b0,x_or_y};
+            if (enable_erase) begin
+	             colour_inside <= 3'b000;
+					  go <= 0;
 					 end
-            if (enable_y) begin
-                y_inside <= x_or_y;
+            if (enable_update) begin
+					 go <= 0;
+                //update x_insde, y_inside
+					 if (vertical == 1'b1) begin
+							y_inside <= y_inside - 1'b1;
 					 end
-            if (enable_colour) begin
-                colour_inside <= colour;
+					 if (horizontal == 1'b1) begin
+					      x_inside <= x_inside + 1'b1;
 					 end
-				if (enable_divider == 1'b1)
-	         begin
-		          colour_inside <= 3'b000;	 		 
- 	         end
-			   
+					 
+					 go <= 1;
+				end   
         end
     end
-    reg[1:0] x_count;
-    reg[1:0] y_count;
-
+   
     //Counter for x keeping the y coordinate the same.
     always @(posedge clock)
     begin
-        if(!reset_n)
+        if(reset_n)
         begin
             x_count <= 2'b000;
 		  end
  	     else if (enable == 1'b1)
 	     begin
 	         if (x_count == 2'b11) begin
+					go <= 0;
 					x_count <= 2'b00;
 					end
 				else
@@ -151,7 +157,7 @@ module datapath(clock, reset_n, x_or_y, colour, enable_x, enable_y, enable_colou
     //Counter for y
     always @(posedge clock)
     begin
-        if(!reset_n)
+        if(reset_n)
         begin
             y_count <= 2'b000;
 		  end
@@ -159,6 +165,7 @@ module datapath(clock, reset_n, x_or_y, colour, enable_x, enable_y, enable_colou
 		  begin
 		      if (y_count == 2'b11) begin
   		          y_count <= 2'b00;
+					 go <= 1;
 	         end
 	         else
 	         begin
@@ -168,114 +175,62 @@ module datapath(clock, reset_n, x_or_y, colour, enable_x, enable_y, enable_colou
 	    end
     end
 	 
-	 
-	 wire[27:0] rate_out;
-	 //ratedivider CHANGE THE FREQEUENCY LOAD
-	 ratedivider r0(
-		.enable(enable_divider),
-		.load(10), 
-		.clock(clock),
-		.reset_n(resetn),
-		.q(rate_out)
-	 
-	 );
-	 wire enable_frame;
-	 wire[27:0] output_frame;
-	 assign enable_frame = (rate_out == 0) ? 1 : 0;
-	 //ratedivider CHANGE THE FREQEUENCY LOAD
-	 ratedivider r12(
-		.enable(enable_frame),
-		.load(15), 
-		.clock(clock),
-		.reset_n(resetn),
-		.q(output_frame)
-	 );
-	 
-	 wire x_enable;
-	 assign x_enable = (output_frame == 0) ? 1 : 0;	 
+	 assign out = next_pixel;
+	 frame_counter f0(.clock(clock), .enable(enable_fcounter), .resetn(reset_n), .signal_out(next_pixel));	 
 	 
     assign colour_out = colour_inside;
     assign x_out = x_inside + x_count;
     assign y_out = y_inside + y_count;
 endmodule
 
-
-module ratedivider(enable, load, clock, reset_n, q);
-	input enable, clock, reset_n;
-	input [27:0] load;
-	output reg [27:0] q;
-
-	always @(posedge clock)
-	begin
-		if (reset_n == 1'b1) //reset
-			q <= load;
-		else if (enable == 1'b1)
-			begin
-				if (q == 0) //reset
-					q <= load;
-				else // keep subtracting
-					q <= q - 1'b1;
-			end
-	end
-endmodule
-
-
-
-module control(clock, reset_n, go, enable, enable_x, enable_y, enable_colour,write_en, start);
-	 input go, clock, reset_n, start;
-	 output reg enable, enable_x, enable_y, enable_colour, write_en;
+module control_draw(clock, reset_n, go,write_en, enable, enable_erase, enable_update, enable_fcounter);
+	 input go, clock, reset_n;
+	 output reg enable, write_en, enable_erase, enable_update, enable_fcounter;
 	 
 	 reg [3:0] curr_state, next_state;
 	 
-	 localparam  LOAD_X        = 4'd0,
-                LOAD_X_WAIT   = 4'd1,
-                LOAD_Y        = 4'd2,
-                LOAD_Y_WAIT   = 4'd3,
-                DRAW          = 4'd4;
+	 localparam  DRAW        = 4'd0,
+                RESET_COUNTER   = 4'd1,
+                ERASE        = 4'd2,
+                UPDATE   = 4'd3;
 					 
 	// Next state logic aka our state table
     always@(*)
     begin: state_table 
             case (curr_state)
-                LOAD_X: next_state = ~go ? LOAD_X_WAIT : LOAD_X; // Loop in current state until value is input
-                LOAD_X_WAIT: next_state = ~go ? LOAD_Y : LOAD_X_WAIT; // Loop in current state until go signal goes low
-                LOAD_Y: next_state = ~start ? LOAD_Y_WAIT : LOAD_Y; // Loop in current state until value is input
-                LOAD_Y_WAIT: next_state = ~start ? DRAW : LOAD_Y_WAIT; // Loop in current state until go signal goes low
-		DRAW: next_state = ~go ? LOAD_X : DRAW;
-            default: next_state = LOAD_X;
+                DRAW: next_state = go ? RESET_COUNTER : DRAW; 
+                RESET_COUNTER: next_state = go ? ERASE : RESET_COUNTER;
+                ERASE: next_state = go ? UPDATE : ERASE; 
+                UPDATE: next_state = go ? DRAW : UPDATE; 
+            default: next_state = DRAW;
         endcase
     end // state_table
 	 
 	 // Output logic aka all of our datapath control signals
     always @(*)
-    begin: enable_signals
+    begin: enable_signalsmodule 
         // By default make all our signals 0
-        enable_x = 1'b0;
-		  enable_y = 1'b0;
-		  enable_colour = 1'b0;
 		  enable = 1'b0;
+		  enable_erase = 1'b0;
 		  write_en = 1'b0;
-
+		  enable_update <= 0;
+		  enable_fcounter <= 0;
         case (curr_state)
-            LOAD_X: begin
-                enable_x <= 1'b1;
-					 enable <= 1;
-                end
-				LOAD_X_WAIT: begin
-					 enable <= 1;
-                end
-            LOAD_Y: begin
-                enable_y <= 1'b1;
-					 enable <= 1;
-                end
-				LOAD_Y_WAIT: begin
-					 enable <= 1;
-					 enable_colour <= 1'b1;
-                end
             DRAW: begin
-	       	        write_en <= 1'b1;
-						  enable <= 1'b1;
-            end
+					 enable <= 1;
+					 write_en <= 1;
+                end
+				RESET_COUNTER: begin
+					 enable_fcounter <= 1;
+                end
+            ERASE: begin
+                write_en <= 1;
+					 enable <= 1;
+					 enable_erase <= 1;
+                end
+				UPDATE: begin
+					 enable_update <= 1;
+                end
         // default:    // don't need default since we already made sure all of our outputs were assigned a value at the start of the always block
         endcase
     end // enable_signals
@@ -284,58 +239,43 @@ module control(clock, reset_n, go, enable, enable_x, enable_y, enable_colour,wri
 	 // current_state registers
     always@(posedge clock)
     begin: state_FFs
-        if(!reset_n)
-            curr_state <= LOAD_X;
+        if(reset_n)
+            curr_state <= DRAW;
         else
             curr_state <= next_state;
     end // state_FFS
 endmodule
 
-module combination(input clock, input reset_n, input go,
-	 output[7:0] x_out, output[6:0] y_out, output[2:0] colour_out, 
-	 input[6:0] x_or_y, input colour, input start);
+module combined_balls(clock, reset_n, x_out, y_out, colour_out);
+	input clock, reset_n;
+	wire go;
+	wire enable, write_en, enable_erase, enable_update, enable_fcounter;
+	output [7:0] x_out;
+   output [6:0] y_out;
+   output [2:0] colour_out;
 
-    	 wire enable_x, enable_y, enable_colour, writeEn, enable;
-         
-  	 // Instansiate datapath
-	datapath d0(.clock(clock), .reset_n(reset_n), 
-		.x_or_y(x_or_y), .colour(colour), 
-		.enable_x(enable_x), .enable_y(enable_y), 
-		.enable_colour(enable_colour), .x_out(x_out),
-		.y_out(y_out), .colour_out(colour_out), .enable(enable)
+	datapath d0(
+		.clock(clock), 
+		.reset_n(reset_n), 
+		.enable(enable), 
+		.enable_erase(enable_erase), 
+		.enable_update(enable_update),
+		.enable_fcounter(enable_fcounter),
+		.x_out(x_out),
+		.y_out(y_out),
+		.colour_out(colour_out),
+		.go(go)
 	);
-    // Instansiate FSM control
-	control c0(.clock(clock), .reset_n(reset_n), .go(go), 
-		.enable(enable), .enable_x(enable_x),
-       		.enable_y(enable_y), .enable_colour(enable_colour),
-		.write_en(writeEn), .start(start)
-	);
-    
-endmodule
-
-module frame_counter(clock, resetn,signal_out, enable);
-	input clock, resetn, enable;
-	output signal_out;
-	wire[27:0] rate_out;
-	 //ratedivider CHANGE THE FREQEUENCY LOAD
-	 ratedivider r1(
+	
+	control_draw c0(
+		.clock(clock),
+		.reset_n(reset_n),
+		.go(go),
 		.enable(enable),
-		.load(10), 
-		.clock(clock),
-		.reset_n(resetn),
-		.q(rate_out)
-	 );
-	 wire enable_frame;
-	 wire[27:0] output_frame;
-	 assign enable_frame = (rate_out == 0) ? 1 : 0;
-	 //ratedivider CHANGE THE FREQEUENCY LOAD
-	 ratedivider r2(
-		.enable(enable_frame),
-		.load(15), 
-		.clock(clock),
-		.reset_n(resetn),
-		.q(output_frame)
-	 );
-	 
-	 assign signal_out = (output_frame == 0) ? 1 : 0;
+		.write_en(write_en),
+		.enable_erase(enable_erase),
+		.enable_update(enable_update),
+		.enable_fcounter(enable_fcounter)
+	);
+
 endmodule

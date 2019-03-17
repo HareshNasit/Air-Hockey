@@ -328,7 +328,7 @@ endmodule
 //
 //	// Declare your inputs and outputs here
 //	// Do not change the following outputs
-//	output			VGA_CLK;   				//	VGA Clock
+//	output			VGA_CLK;   	https://github.com/HareshNasit/Air-Hockey.git			//	VGA Clock
 //	output			VGA_HS;					//	VGA H_SYNC
 //	output			VGA_VS;					//	VGA V_SYNC
 //	output			VGA_BLANK_N;				//	VGA BLANK
