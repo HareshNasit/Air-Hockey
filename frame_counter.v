@@ -2,23 +2,24 @@ module frame_counter(clock, resetn,signal_out, enable);
 	input clock, resetn, enable;
 	output signal_out;
 	wire[27:0] rate_out;
+	 wire enable_frame;
+	 wire[27:0] output_frame;
 	 //ratedivider CHANGE THE FREQEUENCY LOAD
 	 ratedivider r1(
 		.enable(enable),
 		.load(10), 
 		.clock(clock),
-		.reset_n(resetn),
+		.reset_n(resetn ),
 		.q(rate_out)
 	 );
-	 wire enable_frame;
-	 wire[27:0] output_frame;
+	
 	 assign enable_frame = (rate_out == 0) ? 1 : 0;
 	 //ratedivider CHANGE THE FREQEUENCY LOAD
 	 ratedivider r2(
 		.enable(enable_frame),
 		.load(15), 
 		.clock(clock),
-		.reset_n(resetn),
+		.reset_n(resetn ),
 		.q(output_frame)
 	 );
 	 

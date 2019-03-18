@@ -113,6 +113,9 @@ module datapath(clock, reset_n, x_out, y_out, enable_erase, enable_update, colou
             if (enable_erase) begin
 	             colour_inside <= 3'b000;
 					 end
+				if(!enable_erase) begin
+					 colour_inside <= 3'b100;
+					end
             if (enable_update) begin
                 //update x_insde, y_inside
 					 if (vertical == 1'b1) begin
