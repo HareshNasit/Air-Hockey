@@ -19,9 +19,9 @@ add wave {/*}
 
 force {clock} 0 0, 1 1 -r 2
 force {reset_n} 0 0, 1 2, 0 4
-# force {enable} 0 0, 1 6
+force {enable} 0 0, 1 6
 
-force {enable_update} 0 0, 1 6
+#force {enable_update} 0 0, 1 6
 
 run 400ns
 

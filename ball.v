@@ -82,12 +82,12 @@ module part2
     
 endmodule
 
-module datapath(clock, reset_n, x_out, y_out, go, enable_erase, enable_update, colour_out, enable, enable_fcounter);
+module datapath(clock, reset_n, x_out, y_out, enable_erase, enable_update, colour_out, enable, enable_fcounter,y_count_done);
     input clock, reset_n, enable, enable_erase, enable_update,enable_fcounter;
-	 output reg go;
     output [7:0] x_out;
     output [6:0] y_out;
     output [2:0] colour_out;
+	 output reg y_count_done;
     reg[7:0] x_inside; 
     reg[6:0] y_inside;
     reg[2:0] colour_inside;
@@ -95,7 +95,7 @@ module datapath(clock, reset_n, x_out, y_out, go, enable_erase, enable_update, c
 	 reg horizontal;
 	 reg[1:0] x_count;
     reg[1:0] y_count;
-
+	 
     //Register for x, y, colour
     always @(posedge clock)
     begin
@@ -106,16 +106,14 @@ module datapath(clock, reset_n, x_out, y_out, go, enable_erase, enable_update, c
             colour_inside <= 3'b100;
 				vertical <= 1; //up
 				horizontal <= 1;//right
-				go <= 0;
+				y_count_done <= 0;
         end
         else
         begin
             if (enable_erase) begin
 	             colour_inside <= 3'b000;
-					  go <= 0;
 					 end
             if (enable_update) begin
-					 go <= 0;
                 //update x_insde, y_inside
 					 if (vertical == 1'b1) begin
 							y_inside <= y_inside - 1'b1;
@@ -124,7 +122,6 @@ module datapath(clock, reset_n, x_out, y_out, go, enable_erase, enable_update, c
 					      x_inside <= x_inside + 1'b1;
 					 end
 					 
-					 go <= 1;
 				end   
         end
     end
@@ -139,13 +136,12 @@ module datapath(clock, reset_n, x_out, y_out, go, enable_erase, enable_update, c
  	     else if (enable == 1'b1)
 	     begin
 	         if (x_count == 2'b11) begin
-					go <= 0;
 					x_count <= 2'b00;
 					end
 				else
 				begin
 					x_count <= x_count + 1'b1;
-					
+					y_count_done <= 0;
 				end
 			end
 	 end
@@ -153,6 +149,7 @@ module datapath(clock, reset_n, x_out, y_out, go, enable_erase, enable_update, c
 
     wire y_enable;
     assign y_enable = (x_count == 2'b11) ? 1'b1: 1'b0;
+	 
 
     //Counter for y
     always @(posedge clock)
@@ -164,27 +161,26 @@ module datapath(clock, reset_n, x_out, y_out, go, enable_erase, enable_update, c
 		  else if (y_enable == 1'b1 && enable == 1'b1)
 		  begin
 		      if (y_count == 2'b11) begin
+					 y_count_done <= 1'b1;
   		          y_count <= 2'b00;
-					 go <= 1;
 	         end
 	         else
 	         begin
 		          y_count <= y_count + 1'b1;
-					 
+					 y_count_done <= 0;
  	         end
 	    end
     end
 	 
-	 assign out = next_pixel;
-	 frame_counter f0(.clock(clock), .enable(enable_fcounter), .resetn(reset_n), .signal_out(next_pixel));	 
+//	 assign y_count_done = (y_count == 2'b11) ? 1 : 0;
 	 
     assign colour_out = colour_inside;
     assign x_out = x_inside + x_count;
     assign y_out = y_inside + y_count;
 endmodule
 
-module control_draw(clock, reset_n, go,write_en, enable, enable_erase, enable_update, enable_fcounter);
-	 input go, clock, reset_n;
+module control_draw(clock, reset_n, write_en, enable, enable_erase, enable_update, enable_fcounter, next_box, y_count_done);
+	 input clock, reset_n, next_box, y_count_done;
 	 output reg enable, write_en, enable_erase, enable_update, enable_fcounter;
 	 
 	 reg [3:0] curr_state, next_state;
@@ -194,14 +190,14 @@ module control_draw(clock, reset_n, go,write_en, enable, enable_erase, enable_up
                 ERASE        = 4'd2,
                 UPDATE   = 4'd3;
 					 
-	// Next state logic aka our state table
+	// Next state logic aka our stRESET_COUNTERate table
     always@(*)
     begin: state_table 
             case (curr_state)
-                DRAW: next_state = go ? RESET_COUNTER : DRAW; 
-                RESET_COUNTER: next_state = go ? ERASE : RESET_COUNTER;
-                ERASE: next_state = go ? UPDATE : ERASE; 
-                UPDATE: next_state = go ? DRAW : UPDATE; 
+                DRAW: next_state = (y_count_done == 1) ? RESET_COUNTER: DRAW; 
+                RESET_COUNTER: next_state = (next_box == 1) ? ERASE : RESET_COUNTER;
+                ERASE: next_state  = (y_count_done == 1) ? UPDATE: ERASE; 
+                UPDATE: next_state = DRAW; 
             default: next_state = DRAW;
         endcase
     end // state_table
@@ -248,11 +244,12 @@ endmodule
 
 module combined_balls(clock, reset_n, x_out, y_out, colour_out);
 	input clock, reset_n;
-	wire go;
-	wire enable, write_en, enable_erase, enable_update, enable_fcounter;
+	wire enable, write_en, enable_erase, enable_update, enable_fcounter, next_box, y_count_done;
 	output [7:0] x_out;
    output [6:0] y_out;
    output [2:0] colour_out;
+	
+
 
 	datapath d0(
 		.clock(clock), 
@@ -264,18 +261,20 @@ module combined_balls(clock, reset_n, x_out, y_out, colour_out);
 		.x_out(x_out),
 		.y_out(y_out),
 		.colour_out(colour_out),
-		.go(go)
+		.y_count_done(y_count_done)
 	);
 	
 	control_draw c0(
 		.clock(clock),
 		.reset_n(reset_n),
-		.go(go),
 		.enable(enable),
 		.write_en(write_en),
 		.enable_erase(enable_erase),
 		.enable_update(enable_update),
-		.enable_fcounter(enable_fcounter)
+		.enable_fcounter(enable_fcounter),
+		.next_box(next_box),
+		.y_count_done(y_count_done)
 	);
 
+	 frame_counter f0(.clock(clock), .enable(enable_fcounter), .resetn(reset_n), .signal_out(next_box));	 
 endmodule

@@ -1112,3 +1112,251 @@ do combined_draw.do
 # Error: Error loading design
 #        Pausing macro execution
 # MACRO ./combined_draw.do PAUSED at line 12
+do control_draw.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 18:36:52 on Mar 17,2019
+# vlog -reportprogress 300 -timescale 1ns/1ns ball.v 
+# -- Compiling module part2
+# -- Compiling module datapath
+# ** Warning: ball.v(137): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# ** Warning: ball.v(162): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# ** Error: ball.v(181): (vlog-2730) Undefined variable: 'next_pixel'.
+# -- Compiling module control_draw
+# -- Compiling module combined_balls
+# End time: 18:36:52 on Mar 17,2019, Elapsed time: 0:00:00
+# Errors: 1, Warnings: 2
+# ** Error: /s/appspace/quartus-17.0.0.595/modelsim_ase/linuxaloem/vlog failed.
+# Error in macro ./control_draw.do line 9
+# /s/appspace/quartus-17.0.0.595/modelsim_ase/linuxaloem/vlog failed.
+#     while executing
+# "vlog -timescale 1ns/1ns ball.v"
+do control_draw.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 18:37:07 on Mar 17,2019
+# vlog -reportprogress 300 -timescale 1ns/1ns ball.v 
+# -- Compiling module part2
+# -- Compiling module datapath
+# ** Warning: ball.v(137): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# ** Warning: ball.v(162): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# ** Error: ball.v(181): (vlog-2730) Undefined variable: 'next_pixel'.
+# ** Error (suppressible): ball.v(186): (vlog-2388) 'next_pixel' already declared in this scope (datapath).
+# -- Compiling module control_draw
+# -- Compiling module combined_balls
+# End time: 18:37:07 on Mar 17,2019, Elapsed time: 0:00:00
+# Errors: 2, Warnings: 2
+# ** Error: /s/appspace/quartus-17.0.0.595/modelsim_ase/linuxaloem/vlog failed.
+# Error in macro ./control_draw.do line 9
+# /s/appspace/quartus-17.0.0.595/modelsim_ase/linuxaloem/vlog failed.
+#     while executing
+# "vlog -timescale 1ns/1ns ball.v"
+do control_draw.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 18:37:41 on Mar 17,2019
+# vlog -reportprogress 300 -timescale 1ns/1ns ball.v 
+# -- Compiling module part2
+# -- Compiling module datapath
+# ** Warning: ball.v(137): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# ** Warning: ball.v(162): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# -- Compiling module control_draw
+# -- Compiling module combined_balls
+# 
+# Top level modules:
+# 	part2
+# 	combined_balls
+# End time: 18:37:41 on Mar 17,2019, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 2
+# vsim control_draw 
+# Start time: 18:30:12 on Mar 17,2019
+# Loading work.control_draw
+# WARNING: No extended dataflow license exists
+do control_draw.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 18:41:34 on Mar 17,2019
+# vlog -reportprogress 300 -timescale 1ns/1ns ball.v 
+# -- Compiling module part2
+# -- Compiling module datapath
+# ** Warning: ball.v(137): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# ** Warning: ball.v(162): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# -- Compiling module control_draw
+# -- Compiling module combined_balls
+# 
+# Top level modules:
+# 	part2
+# 	combined_balls
+# End time: 18:41:36 on Mar 17,2019, Elapsed time: 0:00:02
+# Errors: 0, Warnings: 2
+# End time: 18:41:38 on Mar 17,2019, Elapsed time: 0:11:26
+# Errors: 1, Warnings: 5
+# vsim control_draw 
+# Start time: 18:41:38 on Mar 17,2019
+# Loading work.control_draw
+# WARNING: No extended dataflow license exists
+do combined_draw.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 18:42:45 on Mar 17,2019
+# vlog -reportprogress 300 -timescale 1ns/1ns ball.v 
+# -- Compiling module part2
+# -- Compiling module datapath
+# ** Warning: ball.v(137): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# ** Warning: ball.v(162): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# -- Compiling module control_draw
+# -- Compiling module combined_balls
+# 
+# Top level modules:
+# 	part2
+# 	combined_balls
+# End time: 18:42:46 on Mar 17,2019, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 2
+# End time: 18:42:48 on Mar 17,2019, Elapsed time: 0:01:10
+# Errors: 0, Warnings: 3
+# vsim combined_balls 
+# Start time: 18:42:48 on Mar 17,2019
+# Loading work.combined_balls
+# Loading work.datapath
+# Loading work.frame_counter
+# Loading work.ratedivider
+# Loading work.control_draw
+# ** Warning: (vsim-3015) ball.v(321): [PCDPC] - Port size (28) does not match connection size (32) for port 'load'. The port definition is at: ball.v(203).
+#    Time: 0 ns  Iteration: 0  Instance: /combined_balls/d0/f0/r1 File: ball.v
+# ** Warning: (vsim-3015) ball.v(332): [PCDPC] - Port size (28) does not match connection size (32) for port 'load'. The port definition is at: ball.v(203).
+#    Time: 0 ns  Iteration: 0  Instance: /combined_balls/d0/f0/r2 File: ball.v
+# WARNING: No extended dataflow license exists
+do combined_draw.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 18:52:37 on Mar 17,2019
+# vlog -reportprogress 300 -timescale 1ns/1ns ball.v 
+# -- Compiling module part2
+# -- Compiling module datapath
+# ** Warning: ball.v(136): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# ** Warning: ball.v(161): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# -- Compiling module control_draw
+# -- Compiling module combined_balls
+# 
+# Top level modules:
+# 	part2
+# 	combined_balls
+# End time: 18:52:37 on Mar 17,2019, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 2
+# End time: 18:52:38 on Mar 17,2019, Elapsed time: 0:09:50
+# Errors: 0, Warnings: 5
+# vsim combined_balls 
+# Start time: 18:52:38 on Mar 17,2019
+# Loading work.combined_balls
+# Loading work.datapath
+# Loading work.frame_counter
+# Loading work.ratedivider
+# Loading work.control_draw
+# ** Warning: (vsim-3015) ball.v(321): [PCDPC] - Port size (28) does not match connection size (32) for port 'load'. The port definition is at: ball.v(203).
+#    Time: 0 ns  Iteration: 0  Instance: /combined_balls/d0/f0/r1 File: ball.v
+# ** Warning: (vsim-3015) ball.v(332): [PCDPC] - Port size (28) does not match connection size (32) for port 'load'. The port definition is at: ball.v(203).
+#    Time: 0 ns  Iteration: 0  Instance: /combined_balls/d0/f0/r2 File: ball.v
+# WARNING: No extended dataflow license exists
+do combined_draw.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 18:59:51 on Mar 17,2019
+# vlog -reportprogress 300 -timescale 1ns/1ns ball.v 
+# -- Compiling module part2
+# -- Compiling module datapath
+# ** Error: ball.v(108): (vlog-2730) Undefined variable: 'go'.
+# ** Warning: ball.v(133): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# ** Warning: ball.v(157): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# -- Compiling module control_draw
+# -- Compiling module combined_balls
+# ** Error: (vlog-13069) ball.v(260): near ")": syntax error, unexpected ')', expecting .* or '.'.
+# End time: 18:59:52 on Mar 17,2019, Elapsed time: 0:00:01
+# Errors: 2, Warnings: 2
+# ** Error: /s/appspace/quartus-17.0.0.595/modelsim_ase/linuxaloem/vlog failed.
+# Error in macro ./combined_draw.do line 9
+# /s/appspace/quartus-17.0.0.595/modelsim_ase/linuxaloem/vlog failed.
+#     while executing
+# "vlog -timescale 1ns/1ns ball.v"
+do combined_draw.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 19:00:09 on Mar 17,2019
+# vlog -reportprogress 300 -timescale 1ns/1ns ball.v 
+# -- Compiling module part2
+# -- Compiling module datapath
+# ** Warning: ball.v(132): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# ** Warning: ball.v(156): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# -- Compiling module control_draw
+# -- Compiling module combined_balls
+# ** Error: (vlog-13069) ball.v(259): near ")": syntax error, unexpected ')', expecting .* or '.'.
+# End time: 19:00:09 on Mar 17,2019, Elapsed time: 0:00:00
+# Errors: 1, Warnings: 2
+# ** Error: /s/appspace/quartus-17.0.0.595/modelsim_ase/linuxaloem/vlog failed.
+# Error in macro ./combined_draw.do line 9
+# /s/appspace/quartus-17.0.0.595/modelsim_ase/linuxaloem/vlog failed.
+#     while executing
+# "vlog -timescale 1ns/1ns ball.v"
+do combined_draw.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 19:00:30 on Mar 17,2019
+# vlog -reportprogress 300 -timescale 1ns/1ns ball.v 
+# -- Compiling module part2
+# -- Compiling module datapath
+# ** Warning: ball.v(132): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# ** Warning: ball.v(156): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# -- Compiling module control_draw
+# -- Compiling module combined_balls
+# 
+# Top level modules:
+# 	part2
+# 	combined_balls
+# End time: 19:00:32 on Mar 17,2019, Elapsed time: 0:00:02
+# Errors: 0, Warnings: 2
+# End time: 19:00:33 on Mar 17,2019, Elapsed time: 0:07:55
+# Errors: 9, Warnings: 9
+# vsim combined_balls 
+# Start time: 19:00:33 on Mar 17,2019
+# Loading work.combined_balls
+# Loading work.datapath
+# Loading work.frame_counter
+# Loading work.ratedivider
+# Loading work.control_draw
+# ** Warning: (vsim-3015) ball.v(321): [PCDPC] - Port size (28) does not match connection size (32) for port 'load'. The port definition is at: ball.v(203).
+#    Time: 0 ns  Iteration: 0  Instance: /combined_balls/d0/f0/r1 File: ball.v
+# ** Warning: (vsim-3015) ball.v(332): [PCDPC] - Port size (28) does not match connection size (32) for port 'load'. The port definition is at: ball.v(203).
+#    Time: 0 ns  Iteration: 0  Instance: /combined_balls/d0/f0/r2 File: ball.v
+# WARNING: No extended dataflow license exists
+do combined_draw.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 19:00:50 on Mar 17,2019
+# vlog -reportprogress 300 -timescale 1ns/1ns ball.v 
+# -- Compiling module part2
+# -- Compiling module datapath
+# ** Warning: ball.v(132): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# ** Warning: ball.v(156): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+# -- Compiling module control_draw
+# -- Compiling module combined_balls
+# 
+# Top level modules:
+# 	part2
+# 	combined_balls
+# End time: 19:00:50 on Mar 17,2019, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 2
+# End time: 19:00:51 on Mar 17,2019, Elapsed time: 0:00:18
+# Errors: 0, Warnings: 5
+# vsim combined_balls 
+# Start time: 19:00:51 on Mar 17,2019
+# Loading work.combined_balls
+# Loading work.datapath
+# Loading work.frame_counter
+# Loading work.ratedivider
+# Loading work.control_draw
+# ** Warning: (vsim-3015) ball.v(321): [PCDPC] - Port size (28) does not match connection size (32) for port 'load'. The port definition is at: ball.v(203).
+#    Time: 0 ns  Iteration: 0  Instance: /combined_balls/d0/f0/r1 File: ball.v
+# ** Warning: (vsim-3015) ball.v(332): [PCDPC] - Port size (28) does not match connection size (32) for port 'load'. The port definition is at: ball.v(203).
+#    Time: 0 ns  Iteration: 0  Instance: /combined_balls/d0/f0/r2 File: ball.v
+# WARNING: No extended dataflow license exists
+# End time: 19:08:04 on Mar 17,2019, Elapsed time: 0:07:13
+# Errors: 0, Warnings: 3
