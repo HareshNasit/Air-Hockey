@@ -6,10 +6,10 @@ vlib work
 # The timescale argument defines default time unit
 # (used when no unit is specified), while the second number
 # defines precision (all times are rounded to this value)
-vlog -timescale 1ns/1ns frame_counter.v
+vlog -timescale 1ns/1ns ball_lab9.v
 
 # Load simulation using poly_function as the top level simulation module.
-vsim frame_counter
+vsim ball_lab9
 
 # Log all signals and add some signals to waveform window.
 log {/*}
@@ -18,10 +18,7 @@ add wave {/*}
 
 
 force {clock} 0 0, 1 1 -r 2
-force {resetn} 0 0, 1 2, 0 4
-force {enable} 0 0, 1 6
-force {clear_sig} 0 0, 1 20, 0 23
-
+force {reset_n} 0 0, 1 2, 0 4
 
 run 800ns
 

@@ -67,7 +67,7 @@ module ball
 			
 	// Put your code here. Your code should produce signals x,y,colour and writeEn/plot
 	// for the VGA controller, in addition to any other functionality your design may require.
-    	wire clear_signal, enable, enable_erase, enable_update, enable_fcounter, next_box, y_count_done, next_boxx;
+    	wire enable, enable_erase, enable_update, enable_fcounter, next_box, y_count_done, next_boxx;
 
     // Instansiate datapath
 	// datapath d0(...);
@@ -94,12 +94,11 @@ module ball
 		.enable_update(enable_update),
 		.enable_fcounter(enable_fcounter),
 		.next_box(next_box),
-		.y_count_done(y_count_done),
-		.clear_signal(clear_signal)
+		.y_count_done(y_count_done)
 	);
 
-	 frame_counter f1(.clock(CLOCK_50), .enable(enable_fcounter), .resetn(resetn), .signal_out(next_box), .clear_signal(clear_signal));	 
-	 frame_counter f2(.clock(CLOCK_50), .enable(enable_fcounter), .resetn(resetn), .signal_out(next_boxx), .clear_signal(clear_signal));	 
+	 frame_counter f1(.clock(CLOCK_50), .enable(enable_fcounter), .resetn(resetn), .signal_out(next_box));	 
+	 frame_counter f2(.clock(CLOCK_50), .enable(enable_fcounter), .resetn(resetn), .signal_out(next_boxx));	 
 
     
 endmodule
@@ -128,19 +127,15 @@ module datapath(clock, reset_n, x_out, y_out, enable_erase, enable_update, colou
             colour_inside <= 3'b100;
 				vertical <= 1; //up
 				horizontal <= 1;//right
-				x_count = 2'b00;
-				y_count = 2'b00;
         end
         else
         begin
-		  
             if (enable_erase) begin
 	             colour_inside <= 3'b010;
 					 end
 				if(!enable_erase) begin
 					 colour_inside <= 3'b100;
 					end
-					
             if (enable_update) begin
                 //update x_insde, y_inside
 					 if (vertical == 1'b1) begin
@@ -149,13 +144,8 @@ module datapath(clock, reset_n, x_out, y_out, enable_erase, enable_update, colou
 					 if (horizontal == 1'b1) begin
 					      x_inside <= x_inside + 1'b1;
 					 end
-				end 
-				
-				if(y_count_done == 1 || enable_fcounter) begin
-					x_count <= 2'b00;
-					y_count <= 2'b00;
-				end
 					 
+				end   
         end
     end
    
@@ -172,7 +162,10 @@ module datapath(clock, reset_n, x_out, y_out, enable_erase, enable_update, colou
 		  end
  	     else if (enable == 1'b1)
 	     begin
-				
+				if(y_count_done == 1) begin
+					x_count <= 2'b000;
+					y_count <= 2'b000;
+				end
 				if (y_enable == 1'b1) begin
 					 
 					 if (y_count == 2'b11) begin
@@ -231,9 +224,9 @@ module datapath(clock, reset_n, x_out, y_out, enable_erase, enable_update, colou
     assign y_out = y_inside + y_count;
 endmodule
 
-module control_draw(go, next_boxx, clock, reset_n, write_en, enable, enable_erase, enable_update, enable_fcounter, next_box, y_count_done, clear_sig);
-	 input clock, reset_n, next_box, next_boxx, y_count_done, go;
-	 output reg enable, write_en, enable_erase, enable_update, enable_fcounter, clear_sig;
+module control_draw(go, next_boxx, clock, reset_n, write_en, enable, enable_erase, enable_update, enable_fcounter, next_box, y_count_done);
+	 input clock, reset_n, next_box, next_boxx y_count_done, go;
+	 output reg enable, write_en, enable_erase, enable_update, enable_fcounter;
 	 
 	 reg [3:0] curr_state, next_state;
 	 
@@ -250,8 +243,8 @@ module control_draw(go, next_boxx, clock, reset_n, write_en, enable, enable_eras
                 DRAW: next_state = (y_count_done == 1) ? RESET_COUNTER: DRAW; 
                 RESET_COUNTER: next_state = (next_box == 1) ? ERASE : RESET_COUNTER;
                 ERASE: next_state  = (y_count_done == 1) ? UPDATE: ERASE;
-					 //RESET_COUNTERX: next_state = (next_boxx == 1) ? DRAW : RESET_COUNTERX;
-                UPDATE: next_state = DRAW; 
+					 RESET_COUNTERX: next_state = (next_boxx == 1) ? DRAW : RESET_COUNTERX;
+                //UPDATE: next_state = DRAW; 
             default: next_state = DRAW;
         endcase
     end // state_table
@@ -264,8 +257,7 @@ module control_draw(go, next_boxx, clock, reset_n, write_en, enable, enable_eras
 		  enable_erase = 1'b0;
 		  write_en = 1'b0;
 		  enable_update <= 0;
-		  enable_fcounter <= 0;
-		  clear_sig <= 0;
+		  enable_fcounter <= 1;
         case (curr_state)
             DRAW: begin
 					 enable <= 1;
@@ -278,7 +270,6 @@ module control_draw(go, next_boxx, clock, reset_n, write_en, enable, enable_eras
                 write_en <= 1;
 					 enable <= 1;
 					 enable_erase <= 1;
-					 clear_sig <= 1;
                 end
 				UPDATE: begin
 					 enable_update <= 1;
@@ -298,9 +289,9 @@ module control_draw(go, next_boxx, clock, reset_n, write_en, enable, enable_eras
     end // state_FFS
 endmodule
 
-module ball_lab9(clock, reset_n, x_out, y_out, colour_out);
+module combined_balls(clock, reset_n, x_out, y_out, colour_out);
 	input clock, reset_n;
-	wire enable, write_en, enable_erase, enable_update, go, next_boxx, enable_fcounter, next_box, y_count_done, clear_sig;
+	wire enable, write_en, enable_erase, enable_update, enable_fcounter, next_box, y_count_done;
 	output [7:0] x_out;
    output [6:0] y_out;
    output [2:0] colour_out;
@@ -327,11 +318,8 @@ module ball_lab9(clock, reset_n, x_out, y_out, colour_out);
 		.enable_update(enable_update),
 		.enable_fcounter(enable_fcounter),
 		.next_box(next_box),
-		.y_count_done(y_count_done),
-		.clear_sig(clear_sig),
-		.next_boxx(next_boxx),
-		.go(go)
+		.y_count_done(y_count_done)
 	);
 
-	 frame_counter f0(.clock(clock), .enable(enable_fcounter), .resetn(reset_n), .signal_out(next_box), .clear_sig(clear_sig));	 
+	 frame_counter f0(.clock(clock), .enable(enable_fcounter), .resetn(reset_n), .signal_out(next_box));	 
 endmodule
