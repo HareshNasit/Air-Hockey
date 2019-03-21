@@ -15,19 +15,19 @@ module collision(clock, enable, x, y, flip_vertical, flip_horizontal);
 		if (enable) begin
 		
 			if (x == 7'b0000000) begin
-				flip_horizontal <= 1'b1;
+				flip_horizontal <= ~flip_horizontal;
 			end
 			
 			if (y == 6'b000000) begin
-				flip_vertical <= 1'b1;
+				flip_vertical <= ~flip_vertical;
 			end
 			
 			if (x + 4 == 320) begin
-				flip_horizontal <= 1'b1;
+				flip_horizontal <= ~flip_horizontal;
 			end
 		
 			if (y + 4 == 240) begin
-				flip_vertical <= 1'b1;
+				flip_vertical <= ~flip_vertical;
 			end
 		
 		end

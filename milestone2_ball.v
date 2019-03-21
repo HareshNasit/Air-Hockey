@@ -72,6 +72,8 @@ module milestone2_ball
     // Instansiate datapath
 	// datapath d0(...);
 		datapath d1(
+		.vertical(SW[1]),
+		.horizontal(SW[2]),
 		.clock(CLOCK_50), 
 		.reset_n(resetn), 
 		.enable(enable), 
@@ -102,7 +104,7 @@ module milestone2_ball
     
 endmodule
 
-module datapath(clock, reset_n, x_out, y_out, enable_erase, enable_update, colour_out, enable, enable_fcounter,y_count_done);
+module datapath(vertical, horizontal, clock, reset_n, x_out, y_out, enable_erase, enable_update, colour_out, enable, enable_fcounter,y_count_done);
     input clock, reset_n, enable, enable_erase, enable_update,enable_fcounter;
     output [7:0] x_out;
     output [6:0] y_out;
@@ -111,17 +113,17 @@ module datapath(clock, reset_n, x_out, y_out, enable_erase, enable_update, colou
     reg[7:0] x_inside; 
     reg[6:0] y_inside;
     reg[2:0] colour_inside;
-	 reg vertical;
-	 reg horizontal;
+	input  vertical;
+	input  horizontal;
 	 reg[1:0] x_count;
     reg[1:0] y_count;
 	 
 	 
-	 collision col0(
-		 .enable(enable_update), .clock(clock), 
-		 .x(x_inside), .y(y_inside),
-		 .flip_vertical(vertical), .flip_horizontal(horizontal)
-	 );
+//	 collision col0(
+//		 .enable(enable_update), .clock(clock), 
+//		 .x(x_inside), .y(y_inside),
+//		 .flip_vertical(vertical), .flip_horizontal(horizontal)
+//	 );
 	 
 	 
     //Register for x, y, colour
