@@ -1,6 +1,6 @@
 // Part 2 skeleton
 
-module ball_lab9
+module milestone2_ball
 	(
 		CLOCK_50,						//	On Board 50 MHz
 		// Your inputs and outputs here
@@ -60,7 +60,7 @@ module ball_lab9
 			.VGA_BLANK(VGA_BLANK_N),
 			.VGA_SYNC(VGA_SYNC_N),
 			.VGA_CLK(VGA_CLK));
-		defparam VGA.RESOLUTION = "160x120";
+		defparam VGA.RESOLUTION = "320x240";
 		defparam VGA.MONOCHROME = "FALSE";
 		defparam VGA.BITS_PER_COLOUR_CHANNEL = 1;
 		defparam VGA.BACKGROUND_IMAGE = "black.mif";
@@ -116,6 +116,14 @@ module datapath(clock, reset_n, x_out, y_out, enable_erase, enable_update, colou
 	 reg[1:0] x_count;
     reg[1:0] y_count;
 	 
+	 
+	 collision col0(
+		 .enable(enable_update), .clock(clock), 
+		 .x(x_inside), .y(y_inside),
+		 .flip_vertical(vertical), .flip_horizontal(horizontal)
+	 );
+	 
+	 
     //Register for x, y, colour
     always @(posedge clock)
     begin
@@ -123,9 +131,9 @@ module datapath(clock, reset_n, x_out, y_out, enable_erase, enable_update, colou
         begin
             x_inside <= 8'b00000000;
             y_inside <= 60;
-            colour_inside <= 3'b100;
-				vertical <= 1; //up
-				horizontal <= 1;//right
+            colour_inside <= 3'b010;
+//				vertical <= 1; //up
+//				horizontal <= 1;//right
         end
         else
         begin
@@ -134,7 +142,7 @@ module datapath(clock, reset_n, x_out, y_out, enable_erase, enable_update, colou
 	             colour_inside <= 3'b000;
 					 end
 				if(!enable_erase) begin
-					 colour_inside <= 3'b100;
+					 colour_inside <= 3'b010;
 					end
 					
             if (enable_update) begin
@@ -145,6 +153,13 @@ module datapath(clock, reset_n, x_out, y_out, enable_erase, enable_update, colou
 					 if (horizontal == 1'b1) begin
 					      x_inside <= x_inside + 1'b1;
 					 end
+					 if (vertical == 1'b0) begin
+							y_inside <= y_inside + 1'b1;
+					 end
+					 if (horizontal == 1'b0) begin
+					      x_inside <= x_inside - 1'b1;
+					 end
+					 
 				end 
 					 
         end
