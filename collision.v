@@ -1,34 +1,37 @@
 
 
-module collision(clock, enable, x, y, flip_vertical, flip_horizontal);
+module collision(clock, enable, reset_n, x, y, vertical, horizontal);
 	//x_in, y_in is top left pixel of the box
 	
-	input clock, enable;
+	input clock, enable, reset_n;
 	
 	input [7:0] x; 
    input [6:0] y;
 	
-	output reg flip_vertical, flip_horizontal;
+	output reg vertical, horizontal;
 
 	always @(posedge clock)
 	begin
-		if (enable) begin
+		if (reset_n)begin
+			horizontal <= 0;
+			vertical <= 1;
+		end
+		else if (enable) begin
 		
 			if (x == 7'b0000000) begin
-				flip_horizontal <= ~flip_horizontal;
-			end
+				horizontal <= 1;
+			end 
+			else if (x + 4 == 100) begin
+				horizontal <= 0;
+			end	
 			
-			if (y == 6'b000000) begin
-				flip_vertical <= ~flip_vertical;
+		  if (y == 6'b000000) begin
+				vertical <= 0;
 			end
-			
-			if (x + 4 == 320) begin
-				flip_horizontal <= ~flip_horizontal;
+			else if (y + 4 == 100) begin
+				vertical <= 1;
 			end
 		
-			if (y + 4 == 240) begin
-				flip_vertical <= ~flip_vertical;
-			end
 		
 		end
 	end
