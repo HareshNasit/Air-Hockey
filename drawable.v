@@ -1,9 +1,11 @@
-module drawable(clock, enable, reset_n, height, width, x_pos, y_pos, colour, x_out, y_out, colout_out, enable_fcounter);
-	input clock, enable, reset_n, enable_fcounter;
+module drawable(clock, enable, reset_n, height, width, x_pos, y_pos, colour, x_out, y_out, colour_out, enable_fcounter, y_count_done);
+	input clock, reset_n, enable, enable_fcounter;
 	input [7:0] width;
 	input [6:0] height;
 	input [7:0] x_pos;
 	input [6:0] y_pos;
+	
+	output reg y_count_done;
 	
 	input [2:0] colour;
 	output [2:0] colour_out;
@@ -13,49 +15,11 @@ module drawable(clock, enable, reset_n, height, width, x_pos, y_pos, colour, x_o
 	 reg[6:0] y_count;
 	 output [7:0] x_out;
 	 output [6:0] y_out;
+	 reg[7:0] x_inside; 
+    reg[6:0] y_inside;
 	 
-	  //Register for x, y, colour
-    always @(posedge clock)
-    begin
-        if (reset_n)
-        begin
-            x_inside <= x_pos;
-            y_inside <= y_pos;
-            colour_inside <= colour;
-//				vertical <= 1; //up
-//				horizontal <= 1;//right
-        end
-        else
-        begin
-		  
-            if (enable_erase) begin
-	             colour_inside <= 3'b000;
-					 end
-				if(!enable_erase) begin
-					 colour_inside <= colour;
-					end
-					
-            if (enable_update) begin
-                //update x_insde, y_inside
-					 if (vertical == 1'b1) begin
-							y_inside <= y_inside - 1'b1;
-					 end
-					 if (horizontal == 1'b1) begin
-					      x_inside <= x_inside + 1'b1;
-					 end
-					 if (vertical == 1'b0) begin
-							y_inside <= y_inside + 1'b1;
-					 end
-					 if (horizontal == 1'b0) begin
-					      x_inside <= x_inside - 1'b1;
-					 end
-					 
-				end 
-					 
-        end
-    end
-   
-	wire y_enable;
+
+    wire y_enable;
     assign y_enable = (x_count == width) ? 1'b1: 1'b0;
 	 
     //Counter for x keeping the y coordinate the same.
@@ -63,6 +27,10 @@ module drawable(clock, enable, reset_n, height, width, x_pos, y_pos, colour, x_o
     begin
         if(reset_n)
         begin
+				x_inside <= x_pos;
+            y_inside <= y_pos;
+            colour_inside <= colour;
+				
             x_count <= 0;
 				y_count <= 0;
 		  end
