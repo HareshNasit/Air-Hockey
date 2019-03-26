@@ -34,7 +34,7 @@ module drawable(clock, enable, reset_n, height, width, x_pos, y_pos, colour, x_o
             x_count <= 0;
 				y_count <= 0;
 		  end
- 	     else if (enable == 1'b1)
+ 	     if (enable == 1'b1)
 	     begin
 				
 				if (y_enable == 1'b1) begin
