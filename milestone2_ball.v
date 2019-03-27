@@ -37,8 +37,8 @@ module milestone2_ball
 	
 	// Create the colour, x, y and writeEn wires that are inputs to the controller.
 	wire [2:0] colour;
-	wire [7:0] x;
-	wire [6:0] y;
+	wire [10:0] x;
+	wire [10:0] y;
 	wire writeEn;
 
 	// Create an Instance of a VGA controller - there can be only one!
@@ -71,35 +71,37 @@ module milestone2_ball
 
     // Instansiate datapath
 	// datapath d0(...);
-		datapath d1(
-		.clock(CLOCK_50), 
-		.reset_n(resetn), 
-		.enable(enable), 
-		.enable_erase(enable_erase), 
-		.enable_update(enable_update),
-		.enable_fcounter(enable_fcounter),
-		.x_out(x),
-		.y_out(y),
-		.colour_out(colour),
-		.y_count_done(y_count_done)
-	);
-	
-	control_draw c1(
-		.go(~KEY[1]),
-		.clock(CLOCK_50),
-		.reset_n(resetn),
-		.enable(enable),
-		.write_en(writeEn),
-		.enable_erase(enable_erase),
-		.enable_update(enable_update),
-		.enable_fcounter(enable_fcounter),
-		.next_box(next_box),
-		.y_count_done(y_count_done),
-		.clear_sig(clear_signal)
-	);
-
-	 frame_counter f1(.clock(CLOCK_50), .enable(enable_fcounter), .resetn(resetn), .signal_out(next_box), .clear_sig(clear_signal));	 
+//		datapath d1(
+//		.clock(CLOCK_50), 
+//		.reset_n(resetn), 
+//		.enable(enable), 
+//		.enable_erase(enable_erase), 
+//		.enable_update(enable_update),
+//		.enable_fcounter(enable_fcounter),
+//		.x_out(x),
+//		.y_out(y),
+//		.colour_out(colour),
+//		.y_count_done(y_count_done)
+//	);
+//	
+//	control_draw c1(
+//		.go(~KEY[1]),
+//		.clock(CLOCK_50),
+//		.reset_n(resetn),
+//		.enable(enable),
+//		.write_en(writeEn),
+//		.enable_erase(enable_erase),
+//		.enable_update(enable_update),
+//		.enable_fcounter(enable_fcounter),
+//		.next_box(next_box),
+//		.y_count_done(y_count_done),
+//		.clear_sig(clear_signal)
+//	);
+//
+//	 frame_counter f1(.clock(CLOCK_50), .enable(enable_fcounter), .resetn(resetn), .signal_out(next_box), .clear_sig(clear_signal));	 
     
+	 
+	 boundaries b0(.signal_go(~KEY[0]),.clock(CLOCK_50),.reset_n(resetn), .x_out(x), .y_out(y), .colour_out(colour), .writeEn(writeEn));
 endmodule
 
 module datapath(clock, reset_n, x_out, y_out, enable_erase, enable_update, colour_out, enable, enable_fcounter,y_count_done);
