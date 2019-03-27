@@ -106,12 +106,12 @@ endmodule
 
 module datapath(clock, reset_n, x_out, y_out, enable_erase, enable_update, colour_out, enable, enable_fcounter,y_count_done);
     input clock, reset_n, enable, enable_erase, enable_update,enable_fcounter;
-    output [7:0] x_out;
-    output [6:0] y_out;
+    output [10:0] x_out;
+    output [10:0] y_out;
     output [2:0] colour_out;
 	 output reg y_count_done;
-    reg[7:0] x_inside; 
-    reg[6:0] y_inside;
+    reg[10:0] x_inside; 
+    reg[10:0] y_inside;
     reg[2:0] colour_inside;
 
 	 reg[1:0] x_count;
@@ -122,7 +122,7 @@ module datapath(clock, reset_n, x_out, y_out, enable_erase, enable_update, colou
 	 
 	 collision col0(
 		 .enable(enable_update), .reset_n(reset_n), .clock(clock), 
-		 .x(x_inside), .y(y_inside),
+		 .x_ball(x_inside), .y_ball(y_inside),
 		 .vertical(vertical), .horizontal(horizontal)
 	 );
 	 
@@ -315,8 +315,8 @@ endmodule
 module combined_balls(clock, reset_n, x_out, y_out, colour_out);
 	input clock, reset_n;
 	wire enable, write_en, enable_erase, enable_update, go, next_boxx, enable_fcounter, next_box, y_count_done, clear_sig;
-	output [7:0] x_out;
-   output [6:0] y_out;
+	output [10:0] x_out;
+   output [10:0] y_out;
    output [2:0] colour_out;
 
 	datapath d0(
