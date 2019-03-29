@@ -43,6 +43,7 @@ module paddle_sim(
 	 ball b0(
 		.clock(clock), .reset_n(reset_fsm), 
 		.x_in(160), .y_in(120), .colour_in(colour), 
+		.p1_x(p1_x), .p1_y(p1_y), .p2_x(p2_x), .p2_y(p2_y),
 		.x_out(ball_x), .y_out(ball_y), .colour_out(colour_ball), 
 		.enable(ball_enDraw), .enable_fcounter(enable_framecounter), .enable_update(enable_update), .y_count_done(ball_finYcount));
 	 
@@ -340,9 +341,12 @@ module paddle_animation(clock, reset_n, colour, reset_fsm, go,
     end // state_FFS
 endmodule
 
-module ball(clock, reset_n, x_in, y_in, colour_in, x_out, y_out, colour_out, enable, enable_fcounter, enable_update, y_count_done);
+module ball(clock, reset_n, x_in, y_in, colour_in, x_out, y_out, colour_out, enable, enable_fcounter, enable_update, y_count_done,
+	p1_x, p1_y, p2_x, p2_y
+);
    
 	input clock, reset_n, enable, enable_fcounter, enable_update;
+	input p1_x, p1_y, p2_x, p2_y;
 	
 	input [10:0] x_in, y_in;
 	input [2:0] colour_in;
@@ -358,7 +362,7 @@ module ball(clock, reset_n, x_in, y_in, colour_in, x_out, y_out, colour_out, ena
 	 .enable(enable_update), .reset_n(reset_n), .clock(clock), 
 	 .x_ball(x_in), .y_ball(y_in),
 	 .x_ball_out(x_pos), .y_ball_out(y_pos),
-	 .x_paddle1(0), .y_paddle1(0), .x_paddle2(0), .y_paddle2(0)
+	 .x_paddle1(p1_x), .y_paddle1(p1_y), .x_paddle2(p2_x), .y_paddle2(p2_y)
 	);
  
 	 drawable p0(
@@ -387,47 +391,69 @@ module collision2(clock, enable, reset_n, x_ball, y_ball, x_paddle1, y_paddle1, 
 	
 	output [10:0] x_ball_out;
 	output [10:0] y_ball_out;
-
+	
+	reg horizontal;
+	reg vertical;
 	
 	always @(posedge clock)
 	begin
-		if (reset_n)begin
+		if (reset_n) begin
 			x_ball_inside <= x_ball;
 			y_ball_inside <= y_ball;
+			horizontal <= 1;
+			vertical <= 1;
 		end
 		else if (enable) begin
 		
-			if (x_ball == 7'b0000000) begin
-				x_ball_inside <= x_ball_inside + 1;
-				//horizontal_inside <= 1;
+			//walls
+			if (x_ball_inside == 6) begin
+				horizontal <= 1;
 			end 
-			else if (x_ball + 4 == 240) begin
-				x_ball_inside <= x_ball_inside - 1;
+			else if (x_ball_inside  == 302) begin
+				horizontal <= 0;
 			end	
 			
-		  if (y_ball == 6'b000000) begin
-				y_ball_inside <= y_ball_inside + 1;
+		  if (y_ball_inside == 6) begin
+				vertical <= 0;
 			end
-			else if (y_ball + 4 == 310) begin
-				y_ball_inside <= y_ball_inside - 1;
+			else if (y_ball_inside  == 218) begin
+				vertical <= 1;
+			end
+		
+		//Paddles
+			if (x_paddle1 <= x_ball_inside && x_ball_inside <= (x_paddle1 + 4)) 
+		begin
+			if (y_paddle1 <= y_ball_inside && y_ball_inside <= (y_paddle1 + 40))
+			begin
+				vertical <= ~vertical;
+				horizontal <= ~horizontal;
 			end
 		end
-//		if (x_paddle1 <= x_ball && x_ball <= (x_paddle1 + 4)) 
-//		begin
-//			if (y_paddle1 <= y_ball && y_ball <= (y_paddle1 + 40))
-//			begin
-//				vertical_inside <= ~vertical_inside;
-//				horizontal_inside <= ~horizontal_inside;
-//			end
-//		end
-//		if (x_paddle2 <= x_ball && x_ball <= (x_paddle2 + 4)) 
-//		begin
-//			if (y_paddle2 <= y_ball && y_ball <= (y_paddle2 + 40))
-//			begin
-//				vertical_inside <= ~vertical_inside;
-//				horizontal_inside <= ~horizontal_inside;
-//			end
-//		end
+		if (x_paddle2 <= x_ball_inside && x_ball_inside <= (x_paddle2 + 4)) 
+		begin
+			if (y_paddle2 <= y_ball_inside && y_ball_inside <= (y_paddle2 + 40))
+			begin
+				vertical <= ~vertical;
+				horizontal <= ~horizontal;
+			end
+		end
+		
+		//movement
+			if (vertical == 1'b1) begin
+						y_ball_inside <= y_ball_inside - 1'b1;
+					 end
+			 if (horizontal == 1'b1) begin
+					x_ball_inside <= x_ball_inside + 1'b1;
+			 end
+			 if (vertical == 1'b0) begin
+					y_ball_inside <= y_ball_inside + 1'b1;
+			 end
+			 if (horizontal == 1'b0) begin
+					x_ball_inside <= x_ball_inside - 1'b1;
+			 end
+		
+		end
+		
 		
 	end
 
