@@ -6,6 +6,10 @@ module milestone2_ball
 		// Your inputs and outputs here
         KEY,
         SW,
+		  HEX0,
+		  HEX4,
+	 PS2_CLK,
+	 PS2_DAT,
 		// The ports below are for the VGA output.  Do not change.
 		VGA_CLK,   						//	VGA Clock
 		VGA_HS,							//	VGA H_SYNC
@@ -17,9 +21,14 @@ module milestone2_ball
 		VGA_B   						//	VGA Blue[9:0]
 	);
 
+	inout PS2_CLK;
+	inout PS2_DAT;
+	
 	input			CLOCK_50;				//	50 MHz
 	input   [9:0]   SW;
 	input   [3:0]   KEY;
+	output [6:0] HEX0;
+	output [6:0] HEX4;
 
 	// Declare your inputs and outputs here
 	// Do not change the following outputs
@@ -67,285 +76,67 @@ module milestone2_ball
 			
 	// Put your code here. Your code should produce signals x,y,colour and writeEn/plot
 	// for the VGA controller, in addition to any other functionality your design may require.
-    	wire clear_signal, enable, enable_erase, enable_update, enable_fcounter, next_box, y_count_done, next_boxx;
-
-    // Instansiate datapath
-	// datapath d0(...);
-//		datapath d1(
-//		.clock(CLOCK_50), 
-//		.reset_n(resetn), 
-//		.enable(enable), 
-//		.enable_erase(enable_erase), 
-//		.enable_update(enable_update),
-//		.enable_fcounter(enable_fcounter),
-//		.x_out(x),
-//		.y_out(y),
-//		.colour_out(colour),
-//		.y_count_done(y_count_done)
-//	);
-//	
-//	control_draw c1(
-//		.go(~KEY[1]),
-//		.clock(CLOCK_50),
-//		.reset_n(resetn),
-//		.enable(enable),
-//		.write_en(writeEn),
-//		.enable_erase(enable_erase),
-//		.enable_update(enable_update),
-//		.enable_fcounter(enable_fcounter),
-//		.next_box(next_box),
-//		.y_count_done(y_count_done),
-//		.clear_sig(clear_signal)
-//	);
-//
-//	 frame_counter f1(.clock(CLOCK_50), .enable(enable_fcounter), .resetn(resetn), .signal_out(next_box), .clear_sig(clear_signal));	 
-    
+	wire clear_signal, enable, enable_erase, enable_update, enable_fcounter, next_box, y_count_done, next_boxx;
+	wire [3:0] p1_curr_score, p2_curr_score;
+	wire [9:0] control;
 	 
-	 boundaries b0(.signal_go(~KEY[0]),.clock(CLOCK_50),.reset_n(resetn), .x_out(x), .y_out(y), .colour_out(colour), .writeEn(writeEn));
-endmodule
-
-module datapath(clock, reset_n, x_out, y_out, enable_erase, enable_update, colour_out, enable, enable_fcounter,y_count_done);
-    input clock, reset_n, enable, enable_erase, enable_update,enable_fcounter;
-    output [10:0] x_out;
-    output [10:0] y_out;
-    output [2:0] colour_out;
-	 output reg y_count_done;
-    reg[10:0] x_inside; 
-    reg[10:0] y_inside;
-    reg[2:0] colour_inside;
-
-	 reg[1:0] x_count;
-    reg[1:0] y_count;
-	 
-	wire  vertical;
-	wire  horizontal;
-	 
-	 collision col0(
-		 .enable(enable_update), .reset_n(reset_n), .clock(clock), 
-		 .x_ball(x_inside), .y_ball(y_inside),
-		 .vertical(vertical), .horizontal(horizontal)
+	 paddle_sim po(
+	 .clock(CLOCK_50), .reset_n(resetn), .go(~KEY[0]),
+	 .p1_up(control[1]), .p1_down(control[3]), .p1_left(control[2]), .p1_right(control[4]),
+	 .p2_up(control[7]), .p2_down(control[8]), .p2_left(control[5]), .p2_right(control[6]),
+	 .x(x), .y(y), .colour_out(colour), .writeEn(writeEn), 
+	 .p1_score(~KEY[1]), .p2_score(~KEY[2]),
+	 .p1_curr_score(p1_curr_score), .p2_curr_score(p2_curr_score)
 	 );
 	 
+	 hex_decoder h0(p1_curr_score, HEX0);
 	 
-    //Register for x, y, colour
-    always @(posedge clock)
-    begin
-        if (reset_n)
-        begin
-            x_inside <= 30;
-            y_inside <= 30;
-            colour_inside <= 3'b010;
-//				vertical <= 1; //up
-//				horizontal <= 1;//right
-        end
-        else
-        begin
-		  
-            if (enable_erase) begin
-	             colour_inside <= 3'b000;
-					 end
-				if(!enable_erase) begin
-					 colour_inside <= 3'b010;
-					end
-					
-            if (enable_update) begin
-                //update x_insde, y_inside
-					 if (vertical == 1'b1) begin
-							y_inside <= y_inside - 1'b1;
-					 end
-					 if (horizontal == 1'b1) begin
-					      x_inside <= x_inside + 1'b1;
-					 end
-					 if (vertical == 1'b0) begin
-							y_inside <= y_inside + 1'b1;
-					 end
-					 if (horizontal == 1'b0) begin
-					      x_inside <= x_inside - 1'b1;
-					 end
-					 
-				end 
-					 
-        end
-    end
+	 hex_decoder h1(p2_curr_score, HEX4);
+	 
+	 
+	 keyboard_tracker #(.PULSE_OR_HOLD(0)) tester(
+	     .clock(CLOCK_50),
+		  .reset(~resetn),
+		  .PS2_CLK(PS2_CLK),
+		  .PS2_DAT(PS2_DAT),
+		  .w(control[1]),
+		  .a(control[2]),
+		  .s(control[3]),
+		  .d(control[4]),
+		  .left(control[5]),
+		  .right(control[6]),
+		  .up(control[7]),
+		  .down(control[8]),
+		  .space(control[9]),
+		  .enter(control[0])
+		  );
+	 
+endmodule
+
+
+module hex_decoder(hex_digit, segments);
+    input [3:0] hex_digit;
+    output reg [6:0] segments;
    
-	wire y_enable;
-    assign y_enable = (x_count == 2'b11) ? 1'b1: 1'b0;
-	 
-    //Counter for x keeping the y coordinate the same.
-    always @(posedge clock)
-    begin
-        if(reset_n)
-        begin
-            x_count <= 2'b000;
-				y_count <= 2'b000;
-		  end
- 	     else if (enable == 1'b1)
-	     begin
-				
-				if (y_enable == 1'b1) begin
-					 
-					 if (y_count == 2'b11) begin
-							y_count_done <= 1'b1;
-							y_count <= 2'b00;
-					 end
-				    else
-					  begin
-							y_count <= y_count + 1'b1;
-							y_count_done <= 0;
-					 end
-				end
-		  
-	         if (x_count == 2'b11) begin
-					x_count <= 2'b00;
-					end
-				else
-				begin
-					x_count <= x_count + 1'b1;
-					y_count_done <= 0;
-				end
-			end
-			
-			if(y_count_done == 1 || enable_fcounter) begin
-				x_count <= 2'b00;
-				y_count <= 2'b00;
-			end
-	 end
-    //Now fixing x, we add all the y pixels.
-
-    
-	 
-
-    //Counter for y
-//    always @(posedge clock)
-//    begin
-//        if(reset_n)
-//        begin
-//		  		//y_count_done <= 0;
-//            y_count <= 2'b000;
-//				//x_count <= 2'b000;
-//		  end
-//		  else if (y_enable == 1'b1 && enable == 1'b1)
-//		  begin
-//		      if (y_count == 2'b11) begin
-//					 y_count_done <= 1'b1;
-//  		          y_count <= 2'b00;
-//	         end
-//	         else
-//	         begin
-//		          y_count <= y_count + 1'b1;
-//					 y_count_done <= 0;
-// 	         end
-//	    end
-//    end
-	 
-//	 assign y_count_done = (y_count == 2'b11) ? 1 : 0;
-	 
-    assign colour_out = colour_inside;
-    assign x_out = x_inside + x_count;
-    assign y_out = y_inside + y_count;
-endmodule
-
-module control_draw(go, next_boxx, clock, reset_n, write_en, enable, enable_erase, enable_update, enable_fcounter, next_box, y_count_done, clear_sig);
-	 input clock, reset_n, next_box, next_boxx, y_count_done, go;
-	 output reg enable, write_en, enable_erase, enable_update, enable_fcounter, clear_sig;
-	 
-	 reg [3:0] curr_state, next_state;
-	 
-	 localparam  DRAW        = 4'd0,
-                RESET_COUNTER   = 4'd1,
-                ERASE        = 4'd2,
-                UPDATE   = 4'd3,
-					 RESET_COUNTERX = 4'd4;
-					 
-	// Next state logic aka our stRESET_COUNTERate table
-    always@(*)
-    begin: state_table 
-            case (curr_state)
-                DRAW: next_state = (y_count_done == 1) ? RESET_COUNTER: DRAW; 
-                RESET_COUNTER: next_state = (next_box == 1) ? ERASE : RESET_COUNTER;
-                ERASE: next_state  = (y_count_done == 1) ? UPDATE: ERASE;
-					 //RESET_COUNTERX: next_state = (next_boxx == 1) ? DRAW : RESET_COUNTERX;
-                UPDATE: next_state = DRAW; 
-            default: next_state = DRAW;
-        endcase
-    end // state_table
-	 
-	 // Output logic aka all of our datapath control signals
     always @(*)
-    begin: enable_signalsmodule 
-        // By default make all our signals 0
-		  enable = 1'b0;
-		  enable_erase = 1'b0;
-		  write_en = 1'b0;
-		  enable_update <= 0;
-		  enable_fcounter <= 0;
-		  clear_sig <= 0;
-        case (curr_state)
-            DRAW: begin
-					 enable <= 1;
-					 write_en <= 1;
-                end
-				RESET_COUNTER: begin
-					 enable_fcounter <= 1;
-                end
-            ERASE: begin
-                write_en <= 1;
-					 enable <= 1;
-					 enable_erase <= 1;
-					 clear_sig <= 1;
-                end
-				UPDATE: begin
-					 enable_update <= 1;
-                end
-        // default:    // don't need default since we already made sure all of our outputs were assigned a value at the start of the always block
+        case (hex_digit)
+            4'h0: segments = 7'b100_0000;
+            4'h1: segments = 7'b111_1001;
+            4'h2: segments = 7'b010_0100;
+            4'h3: segments = 7'b011_0000;
+            4'h4: segments = 7'b001_1001;
+            4'h5: segments = 7'b001_0010;
+            4'h6: segments = 7'b000_0010;
+            4'h7: segments = 7'b111_1000;
+            4'h8: segments = 7'b000_0000;
+            4'h9: segments = 7'b001_1000;
+            4'hA: segments = 7'b000_1000;
+            4'hB: segments = 7'b000_0011;
+            4'hC: segments = 7'b100_0110;
+            4'hD: segments = 7'b010_0001;
+            4'hE: segments = 7'b000_0110;
+            4'hF: segments = 7'b000_1110;   
+            default: segments = 7'h7f;
         endcase
-    end // enable_signals
-	 
-	 
-	 // current_state registers
-    always@(posedge clock)
-    begin: state_FFs
-        if(reset_n)
-            curr_state <= DRAW;
-        else
-            curr_state <= next_state;
-    end // state_FFS
 endmodule
 
-module combined_balls(clock, reset_n, x_out, y_out, colour_out);
-	input clock, reset_n;
-	wire enable, write_en, enable_erase, enable_update, go, next_boxx, enable_fcounter, next_box, y_count_done, clear_sig;
-	output [10:0] x_out;
-   output [10:0] y_out;
-   output [2:0] colour_out;
-
-	datapath d0(
-		.clock(clock), 
-		.reset_n(reset_n), 
-		.enable(enable), 
-		.enable_erase(enable_erase), 
-		.enable_update(enable_update),
-		.enable_fcounter(enable_fcounter),
-		.x_out(x_out),
-		.y_out(y_out),
-		.colour_out(colour_out),
-		.y_count_done(y_count_done)
-	);
-	
-	control_draw c0(
-		.clock(clock),
-		.reset_n(reset_n),
-		.enable(enable),
-		.write_en(write_en),
-		.enable_erase(enable_erase),
-		.enable_update(enable_update),
-		.enable_fcounter(enable_fcounter),
-		.next_box(next_box),
-		.y_count_done(y_count_done),
-		.clear_sig(clear_sig),
-		.next_boxx(next_boxx),
-		.go(go)
-	);
-
-	 frame_counter f0(.clock(clock), .enable(enable_fcounter), .resetn(reset_n), .signal_out(next_box), .clear_sig(clear_sig));	 
-endmodule

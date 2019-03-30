@@ -2,36 +2,52 @@ module paddle_sim(
 	 clock, reset_n, go,
 	 p1_up, p1_down, p1_left, p1_right,
 	 p2_up, p2_down, p2_left, p2_right,
-	 x, y, colour_out, writeEn);
+	 x, y, colour_out, writeEn,
+	 p1_score, p2_score,
+	 p1_curr_score, p2_curr_score,
+	 );
 	 
 	 input clock, reset_n, go;
 	 input p1_up, p1_down, p1_left, p1_right;
 	 input p2_up, p2_down, p2_left, p2_right;
 	 
+	 input p1_score, p2_score;
+	 
+	 output [3:0] p1_curr_score, p2_curr_score;
+	 
 	 output writeEn;
 	 output [10:0] x, y;
 	 output [2:0] colour_out;
 	 
-	 wire p1_enDraw, p2_enDraw, ball_enDraw, bounds_enDraw, reset_fsm,
-		p1_finYcount, p2_finYcount, ball_finYcount, bounds_finYcount,
-		enable_framecounter, erase_start, clear_framecounter, enable_update;
+	 wire p1_enDraw, p2_enDraw, ball_enDraw, bounds_enDraw, clear_enDraw;
+	 wire p1_finYcount, p2_finYcount, ball_finYcount, bounds_finYcount, clear_finYcount;
+	 wire	enable_framecounter, erase_start, clear_framecounter, enable_update, reset_fsm;
 		
 	 wire [10:0] p1_x, p1_y;
 	 wire [10:0] p2_x, p2_y;
 	 wire [10:0] ball_x, ball_y;
 	 wire [10:0] bounds_x, bounds_y;
+	 wire [10:0] clear_x, clear_y;
 
+	 wire [10:0] ball_spawn_x, ball_spawn_y;
 	 
-	 wire [2:0] colour_1, colour_2, colour_ball, colour_bounds;
+	 
+	 wire [2:0] colour_1, colour_2, colour_ball, colour_bounds, colour_clear;
 	 wire [2:0] colour;
+	 
+	 
+	 score s1(.clock(clock), .reset_n(reset_n), .enable_increment(p1_score), .score_out(p1_curr_score));
+	 
+	 score s2(.clock(clock), .reset_n(reset_n), .enable_increment(p2_score), .score_out(p2_curr_score));
 	 
 	 xymux xy(
 		.clock(clock),
-		.p1_enDraw(p1_enDraw), .p2_enDraw(p2_enDraw), .ball_enDraw(ball_enDraw), .bounds_enDraw(bounds_enDraw),
+		.p1_enDraw(p1_enDraw), .p2_enDraw(p2_enDraw), .ball_enDraw(ball_enDraw), .bounds_enDraw(bounds_enDraw), .clear_enDraw(clear_enDraw),
 		.p1_x(p1_x), .p1_y(p1_y), .p1_colour(colour_1),
 		.p2_x(p2_x), .p2_y(p2_y), .p2_colour(colour_2), 
 		.ball_x(ball_x), .ball_y(ball_y), .ball_colour(colour_ball),
 		.bounds_x(bounds_x), .bounds_y(bounds_y), .bounds_colour(colour_bounds),
+		.clear_x(clear_x), .clear_y(clear_y), .clear_colour(colour_clear),
 		.x(x), .y(y), .colour_out(colour_out)
 	 );
 	 
@@ -40,9 +56,17 @@ module paddle_sim(
 		.x_out(bounds_x), .y_out(bounds_y), .colour_out(colour_bounds), 
 		.complete_bounds(bounds_finYcount));
 	 
+	 drawable clear(.clock(clock), .reset_n(reset_fsm), .enable(clear_enDraw),
+		.width(312), .height(232),
+		.x_pos(4), .y_pos(4),
+		.x_out(clear_x), .y_out(clear_y), 
+		.colour(colour), .colour_out(colour_clear), 
+		.enable_fcounter(enable_framecounter),
+		.y_count_done(clear_finYcount));
+	 
 	 ball b0(
 		.clock(clock), .reset_n(reset_fsm), 
-		.x_in(160), .y_in(120), .colour_in(colour), 
+		.x_in(ball_spawn_x), .y_in(ball_spawn_y), .colour_in(colour), 
 		.p1_x(p1_x), .p1_y(p1_y), .p2_x(p2_x), .p2_y(p2_y),
 		.x_out(ball_x), .y_out(ball_y), .colour_out(colour_ball), 
 		.enable(ball_enDraw), .enable_fcounter(enable_framecounter), .enable_update(enable_update), .y_count_done(ball_finYcount));
@@ -61,10 +85,12 @@ module paddle_sim(
 	 
 	 paddle_animation pa(
 		.clock(clock), .reset_n(reset_n), .reset_fsm(reset_fsm), .go(go),
-		.p1_enDraw(p1_enDraw), .p2_enDraw(p2_enDraw), .ball_enDraw(ball_enDraw), .bounds_enDraw(bounds_enDraw),
-		.p1_finYcount(p1_finYcount), .p2_finYcount(p2_finYcount), .ball_finYcount(ball_finYcount), .bounds_finYcount(bounds_finYcount),
+		.p1_enDraw(p1_enDraw), .p2_enDraw(p2_enDraw), .ball_enDraw(ball_enDraw), .bounds_enDraw(bounds_enDraw), .clear_enDraw(clear_enDraw),
+		.p1_finYcount(p1_finYcount), .p2_finYcount(p2_finYcount), .ball_finYcount(ball_finYcount), .bounds_finYcount(bounds_finYcount), .clear_finYcount(clear_finYcount),
 		.enable_framecounter(enable_framecounter), .erase_start(erase_start), .clear_framecounter(clear_framecounter),
-		.enable_update(enable_update), .writeEn(writeEn), .colour(colour));
+		.enable_update(enable_update), .writeEn(writeEn), .colour(colour),
+		.ball_spawn_x(ball_spawn_x), .ball_spawn_y(ball_spawn_y),
+		.p1_score(p1_score), .p2_score(p2_score));
 		 
 	 
 	frame_counter f1(
@@ -74,22 +100,41 @@ module paddle_sim(
 	 
 endmodule
 
+
+module score(clock, reset_n, enable_increment, score_out);
+	input clock, reset_n, enable_increment;
+	output reg[2:0] score_out;
+	
+	always @(posedge clock)
+	begin
+		if (reset_n ) begin
+			score_out <= 0;
+		end
+		if (enable_increment)
+		begin
+			score_out <= score_out + 1'b1;
+		end
+	end
+endmodule
+
 module xymux(clock,
-	p1_enDraw, p2_enDraw, ball_enDraw, bounds_enDraw,
+	p1_enDraw, p2_enDraw, ball_enDraw, bounds_enDraw, clear_enDraw,
 	p1_x, p1_y, p1_colour,
 	p2_x, p2_y, p2_colour,
 	ball_x, ball_y, ball_colour,
 	bounds_x, bounds_y, bounds_colour,
+	clear_x, clear_y, clear_colour,
 	x, y, colour_out);
 	
 	input clock;
-	input p1_enDraw, p2_enDraw, ball_enDraw, bounds_enDraw;
+	input p1_enDraw, p2_enDraw, ball_enDraw, bounds_enDraw, clear_enDraw;
 	input [10:0] p1_x, p1_y;
 	input [10:0] p2_x, p2_y;
 	input [10:0] ball_x, ball_y;
 	input [10:0] bounds_x, bounds_y;
+	input [10:0] clear_x, clear_y;
 	
-	input [2:0] p1_colour, p2_colour, ball_colour, bounds_colour;
+	input [2:0] p1_colour, p2_colour, ball_colour, bounds_colour, clear_colour;
 	
 	output reg [10:0] x,y;
 	output reg [2:0] colour_out;
@@ -115,6 +160,11 @@ module xymux(clock,
 			x <= bounds_x;
 			y <= bounds_y;
 			colour_out <= bounds_colour;
+		end
+		else if (clear_enDraw) begin
+			x <= clear_x;
+			y <= clear_y;
+			colour_out <= clear_colour;
 		end
 	
 	end
@@ -210,21 +260,26 @@ endmodule
 
  
 module paddle_animation(clock, reset_n, colour, reset_fsm, go,
-	p1_enDraw, p2_enDraw, ball_enDraw, bounds_enDraw,
-	p1_finYcount, p2_finYcount, ball_finYcount, bounds_finYcount,
+	p1_enDraw, p2_enDraw, ball_enDraw, bounds_enDraw, clear_enDraw,
+	p1_finYcount, p2_finYcount, ball_finYcount, bounds_finYcount, clear_finYcount,
 	enable_framecounter, erase_start, 
-	clear_framecounter, writeEn, enable_update);
+	clear_framecounter, writeEn, enable_update,
+	ball_spawn_x, ball_spawn_y, p1_score, p2_score
+	);
 	
 	input clock, reset_n, go;
-	input p1_finYcount, p2_finYcount, ball_finYcount, bounds_finYcount;
+	input p1_finYcount, p2_finYcount, ball_finYcount, bounds_finYcount, clear_finYcount;
+	input p1_score, p2_score;
 	
-	output reg p1_enDraw, p2_enDraw, ball_enDraw, bounds_enDraw;
+	output reg p1_enDraw, p2_enDraw, ball_enDraw, bounds_enDraw, clear_enDraw;
 	
 	input erase_start;
 	output reg enable_framecounter, clear_framecounter;
 	output reg writeEn, enable_update, reset_fsm;
 	
 	output reg [2:0] colour;
+	output reg [10:0] ball_spawn_x;
+	output reg [10:0] ball_spawn_y;
 
 	 reg [3:0] curr_state, next_state;
 	 
@@ -237,7 +292,10 @@ module paddle_animation(clock, reset_n, colour, reset_fsm, go,
                 ERASEP1 = 4'd6,
 					 ERASEP2 = 4'd7,
 					 ERASEBALL = 4'd8,
-                UPDATE = 4'd9;
+                UPDATE = 4'd9,
+					 CLEAR_SCREEN = 4'd10,
+					 P1_GOAL = 4'd11,
+					 P2_GOAL = 4'd12;
 					 
 					 
 	// Next state logic aka our stRESET_COUNTERate table
@@ -245,14 +303,23 @@ module paddle_animation(clock, reset_n, colour, reset_fsm, go,
     begin: state_table 
             case (curr_state)
 					 START:  next_state = (go == 1) ? DRAWBOUNDS: START; 
-					 DRAWBOUNDS: next_state = (bounds_finYcount == 1) ? DRAWP1: DRAWBOUNDS;
+					 DRAWBOUNDS: next_state = (bounds_finYcount == 1) ? CLEAR_SCREEN: DRAWBOUNDS;
+					 
+					 P1_GOAL : next_state =  CLEAR_SCREEN;
+					 P2_GOAL : next_state =  CLEAR_SCREEN;
+					 
+					 CLEAR_SCREEN : next_state = (clear_finYcount == 1)? DRAWP1: CLEAR_SCREEN;
+					 			 
                 DRAWP1: next_state = (p1_finYcount == 1) ? DRAWP2: DRAWP1; 
 					 DRAWP2: next_state = (p2_finYcount == 1) ? DRAWBALL: DRAWP2; 
 					 DRAWBALL: next_state = (ball_finYcount == 1) ? RESET_COUNTER: DRAWBALL;
+					 
                 RESET_COUNTER: next_state = (erase_start == 1) ? ERASEP1 : RESET_COUNTER;
+					 
                 ERASEP1: next_state  = (p1_finYcount == 1) ? ERASEP2: ERASEP1;
 					 ERASEP2: next_state  = (p2_finYcount == 1) ? ERASEBALL: ERASEP2;
 					 ERASEBALL: next_state = (ball_finYcount == 1) ? UPDATE: ERASEBALL;
+					 
                 UPDATE: next_state = DRAWP1;
             default: next_state = START;
         endcase
@@ -266,6 +333,7 @@ module paddle_animation(clock, reset_n, colour, reset_fsm, go,
 		  p2_enDraw <= 0; 
 		  ball_enDraw <= 0;
 		  bounds_enDraw <= 0;
+		  clear_enDraw <= 0;
 		  writeEn <= 0;
 		  
 		  reset_fsm <= 0;
@@ -278,13 +346,39 @@ module paddle_animation(clock, reset_n, colour, reset_fsm, go,
 		  
         case (curr_state)
 				START: begin
+					 ball_spawn_x <= 160;
+					 ball_spawn_y <= 120;
 					 reset_fsm <= 1;
+                end
+					 
+				P2_GOAL: begin
+					 ball_spawn_x <= 280;
+					 ball_spawn_y <= 120;
+					 reset_fsm <= 1;
+					 
+                end
+				P1_GOAL: begin
+					 ball_spawn_x <= 40;
+					 ball_spawn_y <= 120;
+					 reset_fsm <= 1;
+					 
+                end
+				
+				CLEAR_SCREEN: begin
+					 clear_enDraw <= 1;
+					 writeEn <= 1;
+					 colour <= 3'b000;
 					 
                 end
 			   DRAWBOUNDS: begin
 					 bounds_enDraw <= 1;
 					 writeEn <= 1;
 					 //colour <= 3'b101;
+                end
+				CLEAR_SCREEN: begin
+					 clear_enDraw <= 1;
+					 writeEn <= 1;
+					 colour <= 3'b000;
 					 
                 end
 		  
@@ -334,10 +428,18 @@ module paddle_animation(clock, reset_n, colour, reset_fsm, go,
 	 // current_state registers
     always@(posedge clock)
     begin: state_FFs
-        if(reset_n)
+        if(reset_n) begin
             curr_state <= START;
-        else
+				end
+		  else if (p1_score) begin
+				curr_state <= P1_GOAL;
+				end
+		  else if (p2_score) begin
+		      curr_state <= P2_GOAL;
+				end
+        else begin
             curr_state <= next_state;
+				end
     end // state_FFS
 endmodule
 
@@ -346,7 +448,7 @@ module ball(clock, reset_n, x_in, y_in, colour_in, x_out, y_out, colour_out, ena
 );
    
 	input clock, reset_n, enable, enable_fcounter, enable_update;
-	input p1_x, p1_y, p2_x, p2_y;
+	input [10:0] p1_x, p1_y, p2_x, p2_y;
 	
 	input [10:0] x_in, y_in;
 	input [2:0] colour_in;
@@ -380,7 +482,6 @@ module collision2(clock, enable, reset_n, x_ball, y_ball, x_paddle1, y_paddle1, 
 	//x_in, y_in is top left pixel of the box
 	
 	input clock, enable, reset_n;
-	
 	input [10:0] x_ball; 
    input [10:0] y_ball;
 	input [10:0] x_paddle1, x_paddle2;
@@ -421,20 +522,75 @@ module collision2(clock, enable, reset_n, x_ball, y_ball, x_paddle1, y_paddle1, 
 			end
 		
 		//Paddles
-			if (x_paddle1 <= x_ball_inside && x_ball_inside <= (x_paddle1 + 4)) 
+//			if (x_ball_inside == (x_paddle1 + 4)) 
+//		begin
+//			if (y_paddle1 <= y_ball_inside && y_ball_inside <= (y_paddle1 + 100))
+//			begin
+//				vertical <= ~vertical;
+//				horizontal <= ~horizontal;
+//				collides_inside <= 1;
+//			end
+//		end
+//		else begin
+//			collides_inside <= 0;
+//		end
+//		if (x_ball_inside == (x_paddle2 + 4)) 
+//		begin
+//			if (y_paddle2 <= y_ball_inside && y_ball_inside <= (y_paddle2 + 100))
+//			begin
+//				vertical <= ~vertical;
+//				horizontal <= ~horizontal;
+//				collides_inside <= 1;
+//			end
+//		end
+//		else begin
+//			collides_inside <= 0;
+//		end
+		//Paddle 1
+		if (x_ball_inside == (x_paddle1 + 10))
 		begin
 			if (y_paddle1 <= y_ball_inside && y_ball_inside <= (y_paddle1 + 40))
 			begin
+				if (horizontal == 0)
+				begin
+					horizontal <= 1;
+				end
 				vertical <= ~vertical;
-				horizontal <= ~horizontal;
 			end
 		end
-		if (x_paddle2 <= x_ball_inside && x_ball_inside <= (x_paddle2 + 4)) 
+		else if ((x_ball_inside + 10) == (x_paddle1))
+		begin
+			if (y_paddle1 <= y_ball_inside && y_ball_inside <= (y_paddle1 + 40))
+			begin
+				if (horizontal == 1)
+				begin
+					horizontal <= 0;
+				end
+				vertical <= ~vertical;
+			end
+		end
+		
+		//Paddle 2
+		if ((x_ball_inside + 10) == (x_paddle2))
 		begin
 			if (y_paddle2 <= y_ball_inside && y_ball_inside <= (y_paddle2 + 40))
 			begin
+				if (horizontal == 1)
+				begin
+					horizontal <= 0;
+				end
 				vertical <= ~vertical;
-				horizontal <= ~horizontal;
+			end
+		end
+		else if ((x_ball_inside) == (x_paddle2 + 10))
+		begin
+			if (y_paddle2 <= y_ball_inside && y_ball_inside <= (y_paddle2 + 40))
+			begin
+				if (horizontal == 0)
+				begin
+					horizontal <= 1;
+				end
+				vertical <= ~vertical;
 			end
 		end
 		
@@ -456,7 +612,7 @@ module collision2(clock, enable, reset_n, x_ball, y_ball, x_paddle1, y_paddle1, 
 		
 		
 	end
-
+	
 	assign x_ball_out = x_ball_inside;
 	assign y_ball_out = y_ball_inside;
 
@@ -704,3 +860,4 @@ module control_boundaries(colour, signal_go, reset_draw, clock, reset_n, width, 
             curr_state <= next_state;
     end // state_FFS
 endmodule
+

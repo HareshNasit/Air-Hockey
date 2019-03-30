@@ -7,7 +7,7 @@ module frame_counter(clear_sig, clock, resetn, signal_out, enable);
 	 //ratedivider CHANGE THE FREQEUENCY LOAD
 	 ratedivider r1(
 		.enable(enable),
-		.load(10), 
+		.load(35000),
 		.clock(clock),
 		.reset_n(resetn ),
 		.q(rate_out),
