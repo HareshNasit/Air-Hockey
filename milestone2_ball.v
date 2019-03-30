@@ -7,6 +7,8 @@ module milestone2_ball
         KEY,
         SW,
 		  HEX0,
+		  HEX3,
+		  HEX2,
 		  HEX4,
 	 PS2_CLK,
 	 PS2_DAT,
@@ -29,6 +31,10 @@ module milestone2_ball
 	input   [3:0]   KEY;
 	output [6:0] HEX0;
 	output [6:0] HEX4;
+	
+	output [6:0] HEX3;
+	output [6:0] HEX2;
+
 
 	// Declare your inputs and outputs here
 	// Do not change the following outputs
@@ -93,6 +99,18 @@ module milestone2_ball
 	 
 	 hex_decoder h1(p2_curr_score, HEX4);
 	 
+	 wire [3:0] digit_1, digit_2;
+
+	 hex_decoder h2(digit_1, HEX3);
+	 
+	 hex_decoder h3(digit_2, HEX2);
+	 
+	 timer t0(
+		.clock(CLOCK_50), 
+		.enable_timer(1), 
+		.reset_n(resetn),  
+		.digit_1(digit_1), .digit_2(digit_2));
+	 
 	 
 	 keyboard_tracker #(.PULSE_OR_HOLD(0)) tester(
 	     .clock(CLOCK_50),
@@ -140,3 +158,49 @@ module hex_decoder(hex_digit, segments);
         endcase
 endmodule
 
+module timer(clock, enable_timer, reset_n, digit_1, digit_2);
+	input clock, reset_n, enable_timer;
+
+	wire[27:0] rate_out;
+	wire decrement_2, decrement_1;
+	
+	output reg [3:0] digit_1;
+	output reg [3:0] digit_2;
+	
+	
+	 //ratedivider CHANGE THE FREQEUENCY LOAD
+	 ratedivider r1(
+		.enable(enable_timer),
+		.load(50000000), 
+		.clock(clock),
+		.reset_n(reset_n),
+		.q(rate_out),
+		.clear_sig(0)
+	 );
+	 
+	 
+	 
+	 assign decrement_2 = (rate_out == 0) ? 1'b1 : 1'b0;
+	 assign decrement_1 = (digit_2 == 0) ? 1'b1 : 1'b0;
+	 
+	 
+	always @(posedge clock)
+	begin
+		if (reset_n) begin
+			digit_1 <= 9;
+			digit_2 <= 0;
+		end
+		
+		if (decrement_2 && digit_2 == 0) begin
+			digit_2 <= 9;
+		end
+		else if (decrement_2) begin
+			digit_2 <= digit_2 - 1;
+		end 
+		
+		if (decrement_1) begin
+			digit_1 <= digit_1 - 1;
+		end
+	end
+
+endmodule
