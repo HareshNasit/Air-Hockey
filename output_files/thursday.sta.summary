@@ -1,0 +1,213 @@
+------------------------------------------------------------
+Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Slow 1100mV 85C Model Setup 'paddle_sim:po|paddle_animation:pa|curr_state.DRAWBOUNDS'
+Slack : -4.086
+TNS   : -20.759
+
+Type  : Slow 1100mV 85C Model Setup 'paddle_sim:po|paddle_animation:pa|curr_state.CLEAR_SCREEN'
+Slack : -3.945
+TNS   : -18.413
+
+Type  : Slow 1100mV 85C Model Setup 'CLOCK_50'
+Slack : -3.784
+TNS   : -277.370
+
+Type  : Slow 1100mV 85C Model Setup 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 32.799
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Hold 'CLOCK_50'
+Slack : 0.323
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Hold 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.389
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Hold 'paddle_sim:po|paddle_animation:pa|curr_state.DRAWBOUNDS'
+Slack : 0.797
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Hold 'paddle_sim:po|paddle_animation:pa|curr_state.CLEAR_SCREEN'
+Slack : 2.452
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Minimum Pulse Width 'paddle_sim:po|paddle_animation:pa|curr_state.CLEAR_SCREEN'
+Slack : 0.337
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Minimum Pulse Width 'paddle_sim:po|paddle_animation:pa|curr_state.DRAWBOUNDS'
+Slack : 0.401
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Minimum Pulse Width 'VGA|mypll|altpll_component|auto_generated|generic_pll1~FRACTIONAL_PLL|vcoph[0]'
+Slack : 1.666
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Minimum Pulse Width 'CLOCK_50'
+Slack : 8.871
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Minimum Pulse Width 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 18.770
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Setup 'paddle_sim:po|paddle_animation:pa|curr_state.DRAWBOUNDS'
+Slack : -4.177
+TNS   : -21.015
+
+Type  : Slow 1100mV 0C Model Setup 'paddle_sim:po|paddle_animation:pa|curr_state.CLEAR_SCREEN'
+Slack : -3.999
+TNS   : -18.620
+
+Type  : Slow 1100mV 0C Model Setup 'CLOCK_50'
+Slack : -3.380
+TNS   : -245.208
+
+Type  : Slow 1100mV 0C Model Setup 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 33.026
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Hold 'CLOCK_50'
+Slack : 0.304
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Hold 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.387
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Hold 'paddle_sim:po|paddle_animation:pa|curr_state.DRAWBOUNDS'
+Slack : 0.699
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Hold 'paddle_sim:po|paddle_animation:pa|curr_state.CLEAR_SCREEN'
+Slack : 2.409
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Minimum Pulse Width 'paddle_sim:po|paddle_animation:pa|curr_state.CLEAR_SCREEN'
+Slack : 0.282
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Minimum Pulse Width 'paddle_sim:po|paddle_animation:pa|curr_state.DRAWBOUNDS'
+Slack : 0.412
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Minimum Pulse Width 'VGA|mypll|altpll_component|auto_generated|generic_pll1~FRACTIONAL_PLL|vcoph[0]'
+Slack : 1.666
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Minimum Pulse Width 'CLOCK_50'
+Slack : 8.823
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Minimum Pulse Width 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 18.759
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Setup 'CLOCK_50'
+Slack : -3.010
+TNS   : -203.579
+
+Type  : Fast 1100mV 85C Model Setup 'paddle_sim:po|paddle_animation:pa|curr_state.DRAWBOUNDS'
+Slack : -1.781
+TNS   : -8.951
+
+Type  : Fast 1100mV 85C Model Setup 'paddle_sim:po|paddle_animation:pa|curr_state.CLEAR_SCREEN'
+Slack : -1.738
+TNS   : -7.973
+
+Type  : Fast 1100mV 85C Model Setup 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 35.177
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Hold 'CLOCK_50'
+Slack : 0.177
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Hold 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.241
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Hold 'paddle_sim:po|paddle_animation:pa|curr_state.DRAWBOUNDS'
+Slack : 0.772
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Hold 'paddle_sim:po|paddle_animation:pa|curr_state.CLEAR_SCREEN'
+Slack : 1.422
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Minimum Pulse Width 'paddle_sim:po|paddle_animation:pa|curr_state.DRAWBOUNDS'
+Slack : 0.443
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Minimum Pulse Width 'paddle_sim:po|paddle_animation:pa|curr_state.CLEAR_SCREEN'
+Slack : 0.465
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Minimum Pulse Width 'VGA|mypll|altpll_component|auto_generated|generic_pll1~FRACTIONAL_PLL|vcoph[0]'
+Slack : 1.666
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Minimum Pulse Width 'CLOCK_50'
+Slack : 8.807
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Minimum Pulse Width 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 18.889
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Setup 'CLOCK_50'
+Slack : -2.345
+TNS   : -156.840
+
+Type  : Fast 1100mV 0C Model Setup 'paddle_sim:po|paddle_animation:pa|curr_state.DRAWBOUNDS'
+Slack : -1.711
+TNS   : -8.469
+
+Type  : Fast 1100mV 0C Model Setup 'paddle_sim:po|paddle_animation:pa|curr_state.CLEAR_SCREEN'
+Slack : -1.656
+TNS   : -7.586
+
+Type  : Fast 1100mV 0C Model Setup 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 35.751
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Hold 'CLOCK_50'
+Slack : 0.164
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Hold 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.221
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Hold 'paddle_sim:po|paddle_animation:pa|curr_state.DRAWBOUNDS'
+Slack : 0.639
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Hold 'paddle_sim:po|paddle_animation:pa|curr_state.CLEAR_SCREEN'
+Slack : 1.373
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Minimum Pulse Width 'paddle_sim:po|paddle_animation:pa|curr_state.CLEAR_SCREEN'
+Slack : 0.450
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Minimum Pulse Width 'paddle_sim:po|paddle_animation:pa|curr_state.DRAWBOUNDS'
+Slack : 0.459
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Minimum Pulse Width 'VGA|mypll|altpll_component|auto_generated|generic_pll1~FRACTIONAL_PLL|vcoph[0]'
+Slack : 1.666
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Minimum Pulse Width 'CLOCK_50'
+Slack : 8.800
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Minimum Pulse Width 'VGA|mypll|altpll_component|auto_generated|generic_pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 18.886
+TNS   : 0.000
+
+------------------------------------------------------------

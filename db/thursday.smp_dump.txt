@@ -1,0 +1,61 @@
+
+State Machine - |milestone2_ball|keyboard_tracker:tester|curr_state
+Name curr_state.SECONDARY_BREAK curr_state.SECONDARY_MAKE curr_state.BREAK curr_state.MAKE 
+curr_state.MAKE 0 0 0 0 
+curr_state.BREAK 0 0 1 1 
+curr_state.SECONDARY_MAKE 0 1 0 1 
+curr_state.SECONDARY_BREAK 1 0 0 1 
+
+State Machine - |milestone2_ball|keyboard_tracker:tester|PS2_Controller:core_driver|s_ps2_transceiver
+Name s_ps2_transceiver.PS2_STATE_3_END_TRANSFER s_ps2_transceiver.PS2_STATE_2_COMMAND_OUT s_ps2_transceiver.PS2_STATE_1_DATA_IN s_ps2_transceiver.PS2_STATE_0_IDLE s_ps2_transceiver.PS2_STATE_4_END_DELAYED 
+s_ps2_transceiver.PS2_STATE_0_IDLE 0 0 0 0 0 
+s_ps2_transceiver.PS2_STATE_1_DATA_IN 0 0 1 1 0 
+s_ps2_transceiver.PS2_STATE_2_COMMAND_OUT 0 1 0 1 0 
+s_ps2_transceiver.PS2_STATE_3_END_TRANSFER 1 0 0 1 0 
+s_ps2_transceiver.PS2_STATE_4_END_DELAYED 0 0 0 1 1 
+
+State Machine - |milestone2_ball|keyboard_tracker:tester|PS2_Controller:core_driver|Altera_UP_PS2_Command_Out:PS2_Command_Out|s_ps2_transmitter
+Name s_ps2_transmitter.PS2_STATE_7_TRANSMISSION_ERROR s_ps2_transmitter.PS2_STATE_6_COMMAND_WAS_SENT s_ps2_transmitter.PS2_STATE_5_RECEIVE_ACK_BIT s_ps2_transmitter.PS2_STATE_4_TRANSMIT_STOP_BIT s_ps2_transmitter.PS2_STATE_3_TRANSMIT_DATA s_ps2_transmitter.PS2_STATE_2_WAIT_FOR_CLOCK s_ps2_transmitter.PS2_STATE_1_INITIATE_COMMUNICATION s_ps2_transmitter.PS2_STATE_0_IDLE 
+s_ps2_transmitter.PS2_STATE_0_IDLE 0 0 0 0 0 0 0 0 
+s_ps2_transmitter.PS2_STATE_1_INITIATE_COMMUNICATION 0 0 0 0 0 0 1 1 
+s_ps2_transmitter.PS2_STATE_2_WAIT_FOR_CLOCK 0 0 0 0 0 1 0 1 
+s_ps2_transmitter.PS2_STATE_3_TRANSMIT_DATA 0 0 0 0 1 0 0 1 
+s_ps2_transmitter.PS2_STATE_4_TRANSMIT_STOP_BIT 0 0 0 1 0 0 0 1 
+s_ps2_transmitter.PS2_STATE_5_RECEIVE_ACK_BIT 0 0 1 0 0 0 0 1 
+s_ps2_transmitter.PS2_STATE_6_COMMAND_WAS_SENT 0 1 0 0 0 0 0 1 
+s_ps2_transmitter.PS2_STATE_7_TRANSMISSION_ERROR 1 0 0 0 0 0 0 1 
+
+State Machine - |milestone2_ball|keyboard_tracker:tester|PS2_Controller:core_driver|Altera_UP_PS2_Data_In:PS2_Data_In|s_ps2_receiver
+Name s_ps2_receiver.PS2_STATE_3_PARITY_IN s_ps2_receiver.PS2_STATE_2_DATA_IN s_ps2_receiver.PS2_STATE_1_WAIT_FOR_DATA s_ps2_receiver.PS2_STATE_0_IDLE s_ps2_receiver.PS2_STATE_4_STOP_IN 
+s_ps2_receiver.PS2_STATE_0_IDLE 0 0 0 0 0 
+s_ps2_receiver.PS2_STATE_1_WAIT_FOR_DATA 0 0 1 1 0 
+s_ps2_receiver.PS2_STATE_2_DATA_IN 0 1 0 1 0 
+s_ps2_receiver.PS2_STATE_3_PARITY_IN 1 0 0 1 0 
+s_ps2_receiver.PS2_STATE_4_STOP_IN 0 0 0 1 1 
+
+State Machine - |milestone2_ball|paddle_sim:po|paddle_animation:pa|curr_state
+Name curr_state.P2_GOAL curr_state.P1_GOAL curr_state.CLEAR_SCREEN curr_state.UPDATE curr_state.ERASEBALL curr_state.ERASEP2 curr_state.ERASEP1 curr_state.RESET_COUNTER curr_state.DRAWBALL curr_state.DRAWP2 curr_state.DRAWP1 curr_state.DRAWBOUNDS curr_state.START 
+curr_state.START 0 0 0 0 0 0 0 0 0 0 0 0 0 
+curr_state.DRAWBOUNDS 0 0 0 0 0 0 0 0 0 0 0 1 1 
+curr_state.DRAWP1 0 0 0 0 0 0 0 0 0 0 1 0 1 
+curr_state.DRAWP2 0 0 0 0 0 0 0 0 0 1 0 0 1 
+curr_state.DRAWBALL 0 0 0 0 0 0 0 0 1 0 0 0 1 
+curr_state.RESET_COUNTER 0 0 0 0 0 0 0 1 0 0 0 0 1 
+curr_state.ERASEP1 0 0 0 0 0 0 1 0 0 0 0 0 1 
+curr_state.ERASEP2 0 0 0 0 0 1 0 0 0 0 0 0 1 
+curr_state.ERASEBALL 0 0 0 0 1 0 0 0 0 0 0 0 1 
+curr_state.UPDATE 0 0 0 1 0 0 0 0 0 0 0 0 1 
+curr_state.CLEAR_SCREEN 0 0 1 0 0 0 0 0 0 0 0 0 1 
+curr_state.P1_GOAL 0 1 0 0 0 0 0 0 0 0 0 0 1 
+curr_state.P2_GOAL 1 0 0 0 0 0 0 0 0 0 0 0 1 
+
+State Machine - |milestone2_ball|paddle_sim:po|boundaries:bounds|control_boundaries:cb0|curr_state
+Name curr_state.END curr_state.TOP curr_state.BOTTOM_RIGHT curr_state.TOP_RIGHT curr_state.BOTTOM_LEFT curr_state.TOP_LEFT curr_state.BOTTOM curr_state.START 
+curr_state.START 0 0 0 0 0 0 0 0 
+curr_state.BOTTOM 0 0 0 0 0 0 1 1 
+curr_state.TOP_LEFT 0 0 0 0 0 1 0 1 
+curr_state.BOTTOM_LEFT 0 0 0 0 1 0 0 1 
+curr_state.TOP_RIGHT 0 0 0 1 0 0 0 1 
+curr_state.BOTTOM_RIGHT 0 0 1 0 0 0 0 1 
+curr_state.TOP 0 1 0 0 0 0 0 1 
+curr_state.END 1 0 0 0 0 0 0 1 

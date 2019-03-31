@@ -1,0 +1,20 @@
+Fitter Status : Successful - Sun Mar 31 16:07:48 2019
+Quartus Prime Version : 18.0.0 Build 614 04/24/2018 SJ Standard Edition
+Revision Name : thursday
+Top-level Entity Name : milestone2_ball
+Family : Cyclone V
+Device : 5CSEMA5F31C6
+Timing Models : Final
+Logic utilization (in ALMs) : 605 / 32,070 ( 2 % )
+Total registers : 537
+Total pins : 90 / 457 ( 20 % )
+Total virtual pins : 0
+Total block memory bits : 230,400 / 4,065,280 ( 6 % )
+Total RAM Blocks : 29 / 397 ( 7 % )
+Total DSP Blocks : 0 / 87 ( 0 % )
+Total HSSI RX PCSs : 0
+Total HSSI PMA RX Deserializers : 0
+Total HSSI TX PCSs : 0
+Total HSSI PMA TX Serializers : 0
+Total PLLs : 1 / 6 ( 17 % )
+Total DLLs : 0 / 4 ( 0 % )
