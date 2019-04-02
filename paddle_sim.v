@@ -614,7 +614,7 @@ module collision2(clock, enable, reset_n, x_ball, y_ball, x_paddle1, y_paddle1, 
 				begin
 					horizontal <= 0;
 				end
-				vertical <= ~vertical;
+				//vertical <= ~vertical;
 			end
 		end
 		else if ((x_ball_inside) == (x_paddle1 + 4))
@@ -625,7 +625,7 @@ module collision2(clock, enable, reset_n, x_ball, y_ball, x_paddle1, y_paddle1, 
 				begin
 					horizontal <= 1;
 				end
-				vertical <= ~vertical;
+				//vertical <= ~vertical;
 			end
 		end
 		
@@ -638,7 +638,7 @@ module collision2(clock, enable, reset_n, x_ball, y_ball, x_paddle1, y_paddle1, 
 				begin
 					horizontal <= 0;
 				end
-				vertical <= ~vertical;
+				//vertical <= ~vertical;
 			end
 		end
 		else if ((x_ball_inside) == (x_paddle2 + 4))
@@ -649,7 +649,7 @@ module collision2(clock, enable, reset_n, x_ball, y_ball, x_paddle1, y_paddle1, 
 				begin
 					horizontal <= 1;
 				end
-				vertical <= ~vertical;
+				//vertical <= ~vertical;
 			end
 		end
 		
